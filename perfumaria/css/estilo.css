@@ -91,7 +91,51 @@ nav .actions {
     color: #cd0303
 }
 
+
+.detalhe-produto {
+    text-decoration: none !important;
+    padding: 10px;
+}
+
+.detalhe-produto img {
+    border: 1px dashed #ccc;
+    max-width: 100%;
+}
+
+.detalhe-produto span {
+    color: #333;
+    display: block;
+}
+
+.detalhe-produto .nome {
+    font-size: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detalhe-produto .call-to-action {
+    transition: all .5s;
+    padding: 10px 15px;
+    margin-top: 10px;
+    color: #FFF;
+    font-size: 24px;
+    background: #cd0303;
+}
+
+.detalhe-produto .call-to-action:hover {
+    background: #333;
+}
+
+.detalhe-produto .preco {
+    font-family: 'Pacifico', cursive;
+    font-size: 30px;
+}
+
 @media (max-width: 767px) {
+    .detalhe-produto .text-right {
+        text-align: center !important;
+    }
+
     .links-uteis .redes-sociais {
         text-align: center !important;
     }
