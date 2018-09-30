@@ -91,7 +91,7 @@ nav .actions {
     color: #cd0303
 }
 
-
+/* Detalhe do Produto */
 .detalhe-produto {
     text-decoration: none !important;
     padding: 10px;
@@ -129,6 +129,46 @@ nav .actions {
 .detalhe-produto .preco {
     font-family: 'Pacifico', cursive;
     font-size: 30px;
+}
+
+
+
+/* Carrinho de Compras */
+.carrinho .labels {
+    font-weight: bold;
+    font-size: 20px;
+
+}
+
+.carrinho .item-carrinho {
+    margin-bottom: 10px;
+}
+
+.carrinho .item-carrinho strong {
+    font-size: 28px;
+}
+
+.item-carrinho i {
+    line-height: 38px;
+    margin: 0 6px;
+}
+
+.carrinho img {
+    border: 1px dashed #ccc;
+    max-width: 100%;
+}
+
+.carrinho .total span {
+    font-family: 'Pacifico', cursive;
+    font-size: 60px;
+}
+
+.carrinho .total .btn {
+    margin-bottom: 10px;
+}
+
+.carrinho .total button {
+    background: #cd0303;
 }
 
 @media (max-width: 767px) {
