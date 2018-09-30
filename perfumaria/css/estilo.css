@@ -1,0 +1,99 @@
+body > .container {
+    background: #FFF;
+}
+
+h2 {
+    font-family: 'Pacifico', cursive;
+}
+
+nav {
+    color: #FFF;
+    padding: 20px 0;
+    text-align: center
+}
+nav a {
+    line-height: 48px;
+    margin-right: 14px;
+    color: #FFF;
+}
+nav a:hover {
+    color: #FFF;
+}
+nav .actions {
+    font-size: 20px;
+}
+
+.categories {
+    text-align: justify;
+}
+.categories a {
+    color: #FFF;
+}
+
+.ofertas {
+    margin-top: 30px;
+}
+
+.ofertas hr {
+    margin-top: 0rem;
+    border: 1px dashed #333;
+}
+
+.produto {
+    text-decoration: none !important;
+    padding: 10px;
+}
+
+.produto img {
+    border: 1px dashed #ccc;
+    max-width: 100%;
+}
+
+.produto span {
+    color: #333;
+    display: block;
+}
+
+.produto .nome {
+    height: 48px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.produto .call-to-action {
+    transition: all .5s;
+    padding: 5px 10px;
+    margin-top: 10px;
+    color: #FFF;
+    background: #cd0303;
+}
+
+.produto:hover .call-to-action {
+    transform: scale(1.3, 1.3);
+    background: #333;
+}
+
+.produto .preco {
+    font-family: 'Pacifico', cursive;
+    font-size: 30px;
+}
+
+.links-uteis a {
+    color: #333;
+    text-decoration: none;
+}
+
+.links-uteis a {
+    transition: all .4s;
+}
+
+.links-uteis a:hover {
+    color: #cd0303
+}
+
+@media (max-width: 767px) {
+    .links-uteis .redes-sociais {
+        text-align: center !important;
+    }
+}
+
