@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" ng-app="scotchApp">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- Arquivos Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Arquivos Bootstrap -->
+
+    <!-- Arquivo do FontAwesome -->
+    <!-- Arquivos de Fonte (Icones, Titulos etc) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" >
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link rel="icon" th:href="@{/img/favicon.png}">
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/admin/css/painel.css}"/>
+    <title>Perfumaria: Painel Administrativo</title>
+</head>
+<body>
+    <div id="main">
+        <div class="nav-side-menu">
+            <div class="brand"><img class="profile-img" th:src="@{/admin/img/logo.jpg}" alt=""></div>
+            <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+            <div class="menu-list">
+                <div class="hello" style="text-align: center; font-size: 25px; padding: 20px 0;">
+                    Olá <span th:text="${session.admin.getNome()}"></span>
+                </div>
+
+                <ul id="menu-content" class="menu-content collapse out">
+                    <li>
+                        <a href="#/produtos"><i class="fa fa-shopping-cart fa-lg"></i> Gerenciar Produtos</a>
+                    </li>
+                    <!-- <li>
+                        <a href="#/usuarios"><i class="fa fa-user fa-lg"></i> Gerenciar Usuários</a>
+                    </li> -->
+                    <li>
+                        <a href="#/relatorio"><i class="fa fa-file-chart-line fa-lg"></i> Relatório</a>
+                    </li>
+                    <!-- <li>
+                        <a href="#/gerenciar-conta"><i class="fa fa-edit fa-lg"></i> Gerenciar Conta</span></a>
+                    </li> -->
+                    <li>
+                        <a href="./logout"><i class="fa fa-times fa-lg"></i> Sair</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content" ng-view></div>
+    </div>
+    <script>
+        var scotchApp = angular.module('scotchApp', ['ngRoute']);
+
+        // configure our routes
+        scotchApp.config(function($routeProvider) {
+            $routeProvider.when('/', {
+                templateUrl : '/admin/home.html',
+                controller  : 'mainController'
+            }).when('/produtos', {
+                templateUrl : '/admin/produtos.html',
+                controller  : 'produtosController'
+            }).when('/relatorio', {
+                templateUrl : '/admin/relatorio.html',
+                controller  : 'contactController'
+            });
+        });
+
+        scotchApp.controller('mainController', function($scope) {
+            console.log('here');
+            $scope.message = 'Everyone come and see how good I look!';
+        });
+
+        scotchApp.controller('produtosController', function($scope, $http) {
+            //Carrego a lista de produtos
+            $http({
+                method: 'GET',
+                url: './api/produtos'
+            }).then(function successCallback(response) {
+                $scope.listaProdutos = response.data;
+            }, function errorCallback(response) {
+                alert('Erro ao solicitar o catalogo de produtos.');
+            });
+
+
+            //Função que exclui um produto
+            $scope.removerProduto = function(produto) {
+                if (!confirm('Deseja excluir o produto "'+ produto.nome +'" ?')) return;
+                var indice = $scope.listaProdutos.indexOf(produto);
+                $http({
+                    method: 'DELETE',
+                    url: './api/produtos/' + produto.id
+                }).then(function successCallback(response) {
+                    $scope.listaProdutos.splice(indice, 1);
+                    $scope.mostarAlerta('sucesso', 'Produto excluido com sucesso.');
+                }, function errorCallback(response) {
+                    $scope.mostarAlerta('erro', 'Erro ao excluir o produto, tente novamente mais tarde.');
+                });
+            };
+
+            $scope.mostarAlerta = function(tipo, mensagem, tempo) {
+                if (tipo == 'sucesso') {
+                    $('.alert').removeClass('alert-danger').addClass('alert-success');
+                } else {
+                    $('.alert').removeClass('alert-success').addClass('alert-danger');
+                }
+                $('.alert').text(mensagem);
+                $('.alert').addClass('show');
+                setTimeout(()=> {
+                    $('.alert').removeClass('show')
+                }, tempo || 3000);
+            }
+
+        });
+
+        scotchApp.controller('relatorioController', function($scope, $http) {
+
+        });
+    </script>
+</body>
+</html>

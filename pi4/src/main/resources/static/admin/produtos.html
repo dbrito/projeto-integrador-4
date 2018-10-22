@@ -1,0 +1,27 @@
+<h1><i class="fa fa-edit fa-lg"></i> Gerenciar Produtos</h1>
+<table class="table table-hover" >
+    <div class="alert fade" role="alert"></div>
+    <thead >
+        <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="prd in listaProdutos">
+            <td>{{prd.nome}}</td>
+            <td>{{prd.marca}}</td>
+            <td>{{prd.preco}}</td>
+            <td>{{prd.quantidade}}</td>
+            <td>{{prd.categoria}}</td>
+            <td>
+                <a href="./editar-produto?id={{prd.id}}" title="Editar"><i class="fa fa-edit fa-lg"></i></a>
+                <a class="remove-item" href="#" onclick="return false" title="Excluir" ng-click="removerProduto(prd)"><i class="fa fa-trash fa-lg"></i></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

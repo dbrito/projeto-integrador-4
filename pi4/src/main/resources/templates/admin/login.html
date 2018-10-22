@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- Arquivos Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Arquivos Bootstrap -->
+
+    <!-- Arquivo do FontAwesome -->
+    <!-- Arquivos de Fonte (Icones, Titulos etc) -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link rel="icon" th:href="@{/img/favicon.png}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/admin/css/login.css}"/>
+    <title>Perfumaria: Login</title>
+</head>
+<body>
+    <div class="container text-center">
+        <div style="width: 100%;max-width:400px; float: none; position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <div class="account-wall">
+                <div class="tab-pane active" id="login">
+                    <img class="profile-img" src="/admin/img/logo.jpg" alt="">
+                    <form id="formulario" class="form-signin" action="./login" method="post">
+                        <input type="text" id="user" name="user" class="form-control" placeholder="Usuário" required autofocus>
+                        <input type="password" id="pass" name="pass" class="form-control" placeholder="Senha" required>
+                        <div class="alert alert-danger" role="alert" style="display:none;">
+                            Usuário ou senha inválidos
+                        </div>
+                        <input type="submit" class="btn btn-lg btn-default btn-block" value="Entrar" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#formulario").submit(function (e) {
+            $('.btn-default').val('Entrando...');
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: window.location.href,
+                data: $("#formulario").serialize(),
+                success: function (result, status) {
+                    window.location.href = './painel';
+                }, error: function (err) {
+                    $('.alert').show();
+                    $('.btn-default').val('Entrar');
+                    //alert('Erro ao efetuar o login, verifique os seus dados.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
