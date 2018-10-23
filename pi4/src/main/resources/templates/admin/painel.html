@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" ng-app="scotchApp">
+<html xmlns:th="http://www.thymeleaf.org" ng-app="painelApp">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -57,10 +57,10 @@
         <div class="content" ng-view></div>
     </div>
     <script>
-        var scotchApp = angular.module('scotchApp', ['ngRoute']);
+        var painelApp = angular.module('painelApp', ['ngRoute']);
 
         // configure our routes
-        scotchApp.config(function($routeProvider) {
+        painelApp.config(function($routeProvider) {
             $routeProvider.when('/', {
                 templateUrl : '/admin/home.html',
                 controller  : 'mainController'
@@ -68,17 +68,17 @@
                 templateUrl : '/admin/produtos.html',
                 controller  : 'produtosController'
             }).when('/relatorio', {
-                templateUrl : '/admin/relatorio.html',
+                templateUrl : '/admin/relatorios.html',
                 controller  : 'contactController'
             });
         });
 
-        scotchApp.controller('mainController', function($scope) {
+        painelApp.controller('mainController', function($scope) {
             console.log('here');
             $scope.message = 'Everyone come and see how good I look!';
         });
 
-        scotchApp.controller('produtosController', function($scope, $http) {
+        painelApp.controller('produtosController', function($scope, $http) {
             //Carrego a lista de produtos
             $http({
                 method: 'GET',
@@ -118,9 +118,17 @@
                 }, tempo || 3000);
             }
 
+            $scope.cadastrar = function() {
+                alert('Cadastrar');
+            }
+
+            $scope.clearModal = function() {
+                alert('Clear');
+            }
+
         });
 
-        scotchApp.controller('relatorioController', function($scope, $http) {
+        painelApp.controller('relatorioController', function($scope, $http) {
 
         });
     </script>

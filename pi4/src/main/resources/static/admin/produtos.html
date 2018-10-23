@@ -1,7 +1,8 @@
-<h1><i class="fa fa-edit fa-lg"></i> Gerenciar Produtos</h1>
-<table class="table table-hover" >
+<h1>
+    <i class="fa fa-edit fa-lg"></i> Gerenciar Produtos</h1>
+<table class="table table-hover">
     <div class="alert fade" role="alert"></div>
-    <thead >
+    <thead>
         <tr>
             <th scope="col">Nome</th>
             <th scope="col">Marca</th>
@@ -19,9 +20,99 @@
             <td>{{prd.quantidade}}</td>
             <td>{{prd.categoria}}</td>
             <td>
-                <a href="./editar-produto?id={{prd.id}}" title="Editar"><i class="fa fa-edit fa-lg"></i></a>
-                <a class="remove-item" href="#" onclick="return false" title="Excluir" ng-click="removerProduto(prd)"><i class="fa fa-trash fa-lg"></i></a>
+                <a href="./editar-produto?id={{prd.id}}" title="Editar">
+                    <i class="fa fa-edit fa-lg"></i>
+                </a>
+                <a class="remove-item" href="#" onclick="return false" title="Excluir" ng-click="removerProduto(prd)">
+                    <i class="fa fa-trash fa-lg"></i>
+                </a>
             </td>
         </tr>
     </tbody>
 </table>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm">
+    Cadastrar Produto
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Produto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/produtos" method="post" id="formulario">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nome">Nome:</label>
+                                <input type="text" class="form-control" name="nome" id="nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="marca">Marca:</label>
+                                <input type="text" class="form-control" name="marca" id="marca" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="descricao">Descrição:</label>
+                                <textarea style="height:152px; max-height:152px;" class="form-control" name="descricao" id="descricao"></textarea>
+                            </div>                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="marca">Imagem:</label>
+                                <input type="file" class="form-control" name="image" id="imagem" required>
+                                <div style="border: 2px dashed #000; padding: 10px;">
+                                    <img id="preview" src="https://www.urbanarts.com.br/imagens/produtos/083860/Detalhes/leao-negro.jpg" alt="" style="width: 100%;">
+                                </div>                            
+                            </div>                               
+                        </div>                                                
+                    </div>                    
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="preco">Preço (R$):</label>
+                            <input type="text" class="form-control" name="preco" id="preco"/ required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="quantidade">Quantidade (estoque):</label>
+                            <input type="number" class="form-control" name="quantidade" id="quantidade" required>
+                        </div>
+                    </div>
+                    <div class="row">                        
+                        <div class="form-group col-md-6">
+                            <label for="categoria">Categoria:</label>
+                            <select class="form-control" name="categoria" id="categoria">
+                                <option value="Perfume">Perfume</option>
+                                <option value="Sabonete">Sabonete</option>
+                            </select>
+                        </div>
+                    </div>                    
+                    <!-- <a href="#" class="btn btn-info" role="button">Cancelar</a> -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" ng-click="clearModal()"  data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="cadastrar()">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imagem").change(function() {
+        readURL(this);
+    });
+</script>
