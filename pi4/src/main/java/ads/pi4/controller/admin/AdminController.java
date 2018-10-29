@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,8 +25,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -67,24 +70,25 @@ public class AdminController {
         return "redirect:/admin/";
     }
     
-    @GetMapping("/painel") //Tela de Painel Administrativo
+    @GetMapping("/painel") //Tela do BackOffice
     public String painel(HttpServletRequest req) {
         HttpSession sessao = req.getSession(true);            
         if (sessao.getAttribute("admin") == null) {
             return "redirect:/admin/";
-        }
-        
+        }        
         return "admin/painel";
     }
     
-    @PostMapping("/api/upload")
+    @PostMapping("/api/upload") //Upload de fotos
     public ResponseEntity<Object> login(@RequestParam("arquivo") MultipartFile arquivo, HttpServletRequest req) {                
         try {            
 //            if (req.getSession(true).getAttribute("admin") != null) {;;
                 byte[] bytesArquivo = arquivo.getBytes();
-                Path destino = Paths.get("C:/Jobs/uploads/" + arquivo.getOriginalFilename());
+                String extensao = arquivo.getOriginalFilename().split("\\.")[1];
+                String nomeArquivoFinal = (new Date()).getTime() + "." + extensao;
+                Path destino = Paths.get("C:/Jobs/uploads/" + nomeArquivoFinal);
                 Files.write(destino, bytesArquivo);                
-                return ResponseEntity.status(HttpStatus.OK).body("Envio de arquivo efetuado com sucesso.");                
+                return ResponseEntity.status(HttpStatus.OK).body(nomeArquivoFinal);                
 //            } else {
 //                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");                
 //            }            
@@ -93,31 +97,37 @@ public class AdminController {
         }                
     }
     
-//    public ResponseEntity<Object> cadastar(@RequestBody Produto pd) {
-//        try {
-//            ProdutoDAO.inserir(pd);
-//            return ResponseEntity.status(HttpStatus.OK).body("Produto cadastrado com sucesso.");
-//        } catch (Exception ex) {
-//            System.out.print(ex);
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
-//        }
-//    };
-        
+    @PostMapping("/api/produtos") //Cadastro de produto
+    public ResponseEntity<Object> cadastar(@RequestBody Produto pd) {
+        try {
+            int idProduto = ProdutoDAO.inserir(pd);
+            return ResponseEntity.status(HttpStatus.OK).body(idProduto);
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
+        }
+    };
     
+    @PostMapping("/api/produtos/{id}") //Cadastro de produto
+    public ResponseEntity<Object> editar(@PathVariable("id") int id, @RequestBody Produto pd) {
+        try {
+            ProdutoDAO.atualizar(pd);
+            return ResponseEntity.status(HttpStatus.OK).body("produto atualizado com sucesso.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
+        }
+    };
+            
     @GetMapping("/api/produtos") //JSON com a lista de Produtos
-    public void listarProdutos(HttpServletResponse response) {
+    @ResponseBody
+    public List<Produto> listarProdutos(HttpServletResponse response) {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");                                                                 
-        List<Produto> produtos = ProdutoDAO.listar();
-        ObjectMapper mapper = new ObjectMapper();        
-        try {
-            response.getWriter().print(mapper.writeValueAsString(produtos));
-        } catch (IOException ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        return ProdutoDAO.listar(null, false);                
     }
     
-    @DeleteMapping("/api/produtos/{id}") //Excluir um produto especifico
+    @DeleteMapping("/api/produtos/{id}") //Exclui um produto especifico
     public ResponseEntity<Object> excluirProduto(@PathVariable("id") int id, HttpServletResponse response) {
         try {
             ProdutoDAO.excluir(id);
@@ -126,28 +136,5 @@ public class AdminController {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao excluir o produto.<br>" + ex.getMessage());
         }        
-    }
-
-    @GetMapping("/ex3")
-    public ModelAndView exemplo3(
-            @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "idade", defaultValue = "99") int idade) {
-        ModelAndView resposta = new ModelAndView("view-exemplo3");
-        if (nome == null || nome.trim().length() == 0) {
-            nome = "Desconhecido";
-        }
-        resposta.addObject("nome", nome);
-        resposta.addObject("idade", idade);
-        resposta.addObject("dataHora", LocalDateTime.now());
-        return resposta;
-    }
-
-    @GetMapping("/ex4/{nomeParam}")
-    public ModelAndView exemplo4(@PathVariable("nomeParam") String nome) {
-        ModelAndView resposta = new ModelAndView("view-exemplo4");
-        resposta.addObject("nome", nome);
-        resposta.addObject("dataHora", LocalDateTime.now());
-        return resposta;
-    }
-
+    }           
 }

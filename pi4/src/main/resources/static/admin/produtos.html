@@ -1,12 +1,15 @@
-<h1>
-    <i class="fa fa-edit fa-lg"></i> Gerenciar Produtos</h1>
+<h1><i class="fa fa-edit fa-lg"></i> Gerenciar Produtos</h1>
+
+<!-- Lista de Produtos -->
 <table class="table table-hover">
     <div class="alert fade" role="alert"></div>
     <thead>
         <tr>
             <th scope="col">Nome</th>
+            <th scope="col">Imagem</th>
             <th scope="col">Marca</th>
-            <th scope="col">Preço</th>
+            <th scope="col">Preço Original</th>
+            <th scope="col">Preço de Venda</th>
             <th scope="col">Quantidade</th>
             <th scope="col">Categoria</th>
             <th scope="col">Ações</th>
@@ -15,15 +18,19 @@
     <tbody>
         <tr ng-repeat="prd in listaProdutos">
             <td>{{prd.nome}}</td>
+            <td>
+                <img ng-src="{{'/static/'+prd.imagem}}" alt="" >
+            </td>
             <td>{{prd.marca}}</td>
-            <td>{{prd.preco}}</td>
+            <td>R$ {{prd.precoOriginal}}</td>
+            <td>R$ {{prd.precoVenda}}</td>
             <td>{{prd.quantidade}}</td>
             <td>{{prd.categoria}}</td>
             <td>
-                <a href="./editar-produto?id={{prd.id}}" title="Editar">
+                <a ng-click="editarProduto(prd)" onclick="return false" href="#" title="Editar">
                     <i class="fa fa-edit fa-lg"></i>
                 </a>
-                <a class="remove-item" href="#" onclick="return false" title="Excluir" ng-click="removerProduto(prd)">
+                <a ng-click="removerProduto(prd)" class="remove-item" href="#" onclick="return false" title="Excluir">
                     <i class="fa fa-trash fa-lg"></i>
                 </a>
             </td>
@@ -50,69 +57,64 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="nome">Nome:</label>
-                                <input type="text" class="form-control" name="nome" id="nome" required>
+                                <input ng-model="produto.nome" type="text" class="form-control" name="nome" id="nome" required>
                             </div>
                             <div class="form-group">
                                 <label for="marca">Marca:</label>
-                                <input type="text" class="form-control" name="marca" id="marca" required>
+                                <input ng-model="produto.marca" type="text" class="form-control" name="marca" id="marca" required>
                             </div>
                             <div class="form-group">
                                 <label for="descricao">Descrição:</label>
-                                <textarea style="height:152px; max-height:152px;" class="form-control" name="descricao" id="descricao"></textarea>
-                            </div>                            
+                                <textarea ng-model="produto.descricao" style="height:152px; max-height:152px;" class="form-control" name="descricao" id="descricao"></textarea>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div class="form-group" style="text-align: center">
                                 <label for="marca">Imagem:</label>
-                                <input type="file" class="form-control" name="image" id="imagem" required>
-                                <div style="border: 2px dashed #000; padding: 10px;">
-                                    <img id="preview" src="https://www.urbanarts.com.br/imagens/produtos/083860/Detalhes/leao-negro.jpg" alt="" style="width: 100%;">
-                                </div>                            
-                            </div>                               
-                        </div>                                                
-                    </div>                    
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="preco">Preço (R$):</label>
-                            <input type="text" class="form-control" name="preco" id="preco"/ required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="quantidade">Quantidade (estoque):</label>
-                            <input type="number" class="form-control" name="quantidade" id="quantidade" required>
+                                <input onchange="angular.element(this).scope().trocarImagem(this)" type="file" class="form-control" name="image" id="imagem" required>
+                                <div style="border: 2px dashed #000; padding: 10px; height: 278px;">
+                                    <img id="preview" ng-src="{{
+                                        (produto.imagem) ? ((produto.imagem.indexOf('data') == 0) ? produto.imagem : '/static/'+produto.imagem) : '/admin/img/image_icon.png'
+                                    }}" alt="" style="width: auto; height: 254px;">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">                        
-                        <div class="form-group col-md-6">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="quantidade">Quantidade:</label>
+                            <input ng-model="produto.quantidade" type="number" class="form-control" name="quantidade" id="quantidade" required>
+                        </div>
+                        <div class="form-group col-md-3">
                             <label for="categoria">Categoria:</label>
-                            <select class="form-control" name="categoria" id="categoria">
+                            <select ng-model="produto.categoria" class="form-control" name="categoria" id="categoria">
                                 <option value="Perfume">Perfume</option>
                                 <option value="Sabonete">Sabonete</option>
                             </select>
                         </div>
-                    </div>                    
+                        <div class="form-group col-md-3">
+                            <label for="precoOriginal">Preço Original:</label>
+                            <input ng-model="produto.precoOriginal" type="text" class="form-control" name="precoOriginal" id="precoOriginal"/ required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="precoVenda">Preço Venda:</label>
+                            <input ng-model="produto.precoVenda" type="text" class="form-control" name="precoVenda" id="precoVenda"/ required>
+                        </div>
+                    </div>
                     <!-- <a href="#" class="btn btn-info" role="button">Cancelar</a> -->
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" ng-click="clearModal()"  data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" ng-click="cadastrar()">Cadastrar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="salvar()">{{(produto.id) ? 'Atualizar' : 'Cadastrar' }}</button>
             </div>
         </div>
     </div>
 </div>
-
 <script>
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#preview').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    $("#imagem").change(function() {
-        readURL(this);
+    $("#precoOriginal, #precoVenda").maskMoney({
+        prefix: "",
+        decimal: ",",
+        thousands: "."
     });
 </script>

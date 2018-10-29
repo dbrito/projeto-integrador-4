@@ -177,3 +177,11 @@ body {
 .content h1 {
     margin-bottom: 30px;
 }
+
+.content table td {
+    vertical-align: middle;
+}
+
+.content table td img {
+    max-height: 80px;
+}

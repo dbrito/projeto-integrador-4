@@ -10,6 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/plentz/jquery-maskmoney/master/dist/jquery.maskMoney.min.js"></script>
     <!-- Arquivos Bootstrap -->
 
     <!-- Arquivo do FontAwesome -->
@@ -59,6 +60,16 @@
     <script>
         var painelApp = angular.module('painelApp', ['ngRoute']);
 
+        function realToNumber(valor) {
+            return Number(valor.replace('.', '').replace(',', '.'));
+        }
+
+        function numberToReal(numero) {
+            var numero = numero.toFixed(2).split('.');
+            numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+            return numero.join(',');
+        }
+
         // configure our routes
         painelApp.config(function($routeProvider) {
             $routeProvider.when('/', {
@@ -74,39 +85,61 @@
         });
 
         painelApp.controller('mainController', function($scope) {
-            console.log('here');
             $scope.message = 'Everyone come and see how good I look!';
         });
 
         painelApp.controller('produtosController', function($scope, $http) {
+            $scope.arquivoImagem = null;
+            var produtoLimpo = {
+                "id": '', "codigo": '', "nome": '', "marca": '', "preco": '', "imagem": '',
+                "quantidade": '', "categoria": '', "descricao": '', "precoFormatado": ''
+            };
+            $scope.produto = JSON.parse(JSON.stringify(produtoLimpo));
+
             //Carrego a lista de produtos
             $http({
                 method: 'GET',
                 url: './api/produtos'
             }).then(function successCallback(response) {
-                $scope.listaProdutos = response.data;
+                var produtos = response.data;
+                produtos.forEach(function (item) {
+                    item.precoOriginal = numberToReal(item.precoOriginal);
+                    item.precoVenda = numberToReal(item.precoVenda);
+                })
+                $scope.listaProdutos = produtos;
+
             }, function errorCallback(response) {
                 alert('Erro ao solicitar o catalogo de produtos.');
             });
 
+            //Função que fica atualizando a imagem no modal ao mudar o input de arquivo
+            $scope.trocarImagem = function(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $scope.produto.imagem = e.target.result;
+                        $scope.$apply();
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
 
-            //Função que exclui um produto
-            $scope.removerProduto = function(produto) {
-                if (!confirm('Deseja excluir o produto "'+ produto.nome +'" ?')) return;
-                var indice = $scope.listaProdutos.indexOf(produto);
-                $http({
-                    method: 'DELETE',
-                    url: './api/produtos/' + produto.id
-                }).then(function successCallback(response) {
-                    $scope.listaProdutos.splice(indice, 1);
-                    $scope.mostarAlerta('sucesso', 'Produto excluido com sucesso.');
-                }, function errorCallback(response) {
-                    $scope.mostarAlerta('erro', 'Erro ao excluir o produto, tente novamente mais tarde.');
-                });
-            };
+            //Ao fechar o modal "limpo" o produto do $scope
+            $("#modalForm").on("hidden.bs.modal", function () {
+                $scope.produto = JSON.parse(JSON.stringify(produtoLimpo));
+                $scope.$apply();
+                $('#imagem').val('');
+            });
 
-            $scope.mostarAlerta = function(tipo, mensagem, tempo) {
-                if (tipo == 'sucesso') {
+            //Modal do "Editar"
+            $scope.editarProduto = function (produto) {
+                $scope.produto = produto;
+                $('#modalForm').modal('show');
+            }
+
+            //Apresenta as mensagens de sucesso e erro
+            $scope.mostrarAlerta = function(sucesso, mensagem, tempo) {
+                if (sucesso) {
                     $('.alert').removeClass('alert-danger').addClass('alert-success');
                 } else {
                     $('.alert').removeClass('alert-success').addClass('alert-danger');
@@ -118,14 +151,92 @@
                 }, tempo || 3000);
             }
 
-            $scope.cadastrar = function() {
-                alert('Cadastrar');
+            //Função acionada quando clicar no submit de modal (cadastra ou atualiza)
+            $scope.salvar = function() {
+                //TO-DO: Validar os campos
+                $scope.produto.precoOriginal = realToNumber($scope.produto.precoOriginal);
+                $scope.produto.precoVenda = realToNumber($scope.produto.precoVenda);
+                if ($("#imagem")[0].files.length > 0) enviarImagem();
+                else {
+                    if (!$scope.produto.id) cadastrarProduto();
+                    else atualizarProduto();
+                }
             }
 
-            $scope.clearModal = function() {
-                alert('Clear');
+            function enviarImagem() {
+                var fd = new FormData();
+                fd.append('arquivo', $("#imagem")[0].files[0]);
+                $.ajax({
+                    url: '/admin/api/upload',
+                    method: "POST",
+                    contentType: false,
+                    processData: false,
+                    data:fd,
+                    success: function(data){
+                        $scope.produto.imagem = data;
+                        if (!$scope.produto.id) cadastrarProduto();
+                        else atualizarProduto();
+                    },
+                    error: function (data) {
+                        console.log('err', data);
+                    }
+                });
             }
 
+            function cadastrarProduto() {
+                $.ajax({
+                    type: "POST",
+                    url: '/admin/api/produtos',
+                    data: JSON.stringify($scope.produto),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.produto.id = data;
+                        var novoProduto = JSON.parse(JSON.stringify($scope.produto));
+                        novoProduto.precoOriginal = numberToReal(novoProduto.precoOriginal);
+                        novoProduto.precoVenda = numberToReal(novoProduto.precoVenda);
+                        $scope.listaProdutos.push(novoProduto);
+                        $scope.$apply();
+                        $('#modalForm').modal('hide');
+                        $scope.mostrarAlerta('sucesso', 'Produto cadastrado com sucesso.')
+                    },
+                    error: (data)=> {
+                        alert('Erro ao cadastrar o produto, tente novamente mais tarde.');
+                    }
+                });
+            }
+
+            function atualizarProduto() {
+                $.ajax({
+                    type: "POST",
+                    url: '/admin/api/produtos/'+$scope.produto.id,
+                    data: JSON.stringify($scope.produto),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.produto.precoOriginal = numberToReal($scope.produto.precoOriginal);
+                        $scope.produto.precoVenda = numberToReal($scope.produto.precoVenda);
+                        $scope.mostrarAlerta('sucesso', 'Produto atualizado com sucesso.')
+                        $('#modalForm').modal('hide');
+                    },
+                    error: (data)=> {
+                        alert('Erro ao atualizar o produto, tente novamente mais tarde.');
+                    }
+                });
+            }
+
+            //Função que "exclui" um produto
+            $scope.removerProduto = function(produto) {
+                if (!confirm('Deseja excluir o produto "'+ produto.nome +'" ?')) return;
+                var indice = $scope.listaProdutos.indexOf(produto);
+                $http({
+                    method: 'DELETE',
+                    url: './api/produtos/' + produto.id
+                }).then(function successCallback(response) {
+                    $scope.listaProdutos.splice(indice, 1);
+                    $scope.mostrarAlerta(true, 'Produto excluido com sucesso.');
+                }, function errorCallback(response) {
+                    $scope.mostrarAlerta(false, 'Erro ao excluir o produto, tente novamente mais tarde.');
+                });
+            };
         });
 
         painelApp.controller('relatorioController', function($scope, $http) {

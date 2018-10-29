@@ -46,17 +46,8 @@ CREATE TABLE IF NOT EXISTS `item_venda` (
   PRIMARY KEY (`id_item_venda`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.item_venda: ~8 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.item_venda: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `item_venda` DISABLE KEYS */;
-INSERT INTO `item_venda` (`id_item_venda`, `id_produto`, `quantidade`, `id_venda`, `preco`) VALUES
-	(21, 30, 1, 24, 299),
-	(22, 31, 1, 24, 299),
-	(23, 32, 1, 25, 252),
-	(24, 33, 1, 25, 139),
-	(25, 34, 1, 26, 279),
-	(26, 31, 1, 27, 299),
-	(27, 30, 1, 27, 299),
-	(28, 33, 1, 27, 139);
 /*!40000 ALTER TABLE `item_venda` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela projeto_integrador.produto
@@ -64,24 +55,28 @@ CREATE TABLE IF NOT EXISTS `produto` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) DEFAULT NULL,
   `marca` varchar(255) DEFAULT NULL,
-  `preco` double NOT NULL,
+  `imagem` varchar(500) DEFAULT NULL,
+  `preco_original` double NOT NULL,
+  `preco_venda` double NOT NULL,
   `quantidade` int(11) NOT NULL,
   `categoria` varchar(255) DEFAULT NULL,
   `descricao` longtext,
   `ativo` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_produto_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.produto: ~6 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.produto: ~8 rows (aproximadamente)
 /*!40000 ALTER TABLE `produto` DISABLE KEYS */;
-INSERT INTO `produto` (`id`, `nome`, `marca`, `preco`, `quantidade`, `categoria`, `descricao`, `ativo`) VALUES
-	(30, 'Perfume Lancôme La Vie', 'Lancôme', 299, 98, 'Perfume', 'Um resplandecente sorriso, inspirado na nobreza rara da Íris Gourmand (a flor da felicidade) revela uma fragrância envolvente e sofisticada para uma mulher livre e realizada.\r\n\r\nLa Vie Est Belle, francês para \\"a vida é bela\\", representa uma escolha: a escolha para criar o seu próprio caminho para a felicidade. Feito com os ingredientes naturais mais preciosos, a fragrância entrelaça a elegância da íris com a força da Patchouli e a doçura do Pralinê. Notas florais de íris, jasmim e flor de laranjeira tunisina são adicionados na forma de absolutos sublimes.\r\n\r\nLa Vie Est Belle é a fragrância da feminilidade alegre que torna a vida mais bonita. É para a mulher que vive no presente, que é preenchida com honestidade, verdade e gratidão, e que está livre para enaltecer o seu próprio caminho único.\r\n\r\nNotas: Íris e Patchouli.\r\nEstilo: Livre e Feliz.\r\n', b'1'),
-	(31, 'Perfume Carolina Herrera', 'Carolina Herrera', 299, 48, 'Perfume', 'A Fragrância:\r\nPor um lado, ela é Boa, por outro, é Má.\r\nA fragrância Good Girl foi inspirada pela visão única de Carolina Herrera sobre a mulher moderna: audaciosa, sexy, elegante e enigmática. Sempre atravessando os limites.', b'1'),
-	(32, 'CK One', 'Calvin Klein', 252, 99, 'Perfume', 'Cítrica e refrescante, esta fragrância abre com uma combinação vívida e efervescente de bergamota, cardamomo, tangerina, freesia e lavanda.', b'1'),
-	(33, 'Azzaro Pour Homme', 'Azzaro', 139, 98, 'Perfume', 'Azzaro Pour Homme é um coquetel exclusivo de humor, vitalidade, modernidade e elegância masculina, espelhado em seu criador Loris Azzaro.', b'1'),
-	(34, 'Lady Million', 'Paco Rabanne', 279, 99, 'Perfume', 'Uma aventura apaixonante iniciada com o perfume 1 Million, desse dandy sedutor. Agora, o seu alter ego avança em direção a ele. Uma jovem mulher envolvente, radiosa, de fragilidade aparente, mas possuidora de um caráter incrivelmente sensual e fogoso. Em conformidade com a sua fragrância e com o diamante, esta Lady Million possui múltiplas facetas. Uma nota de cabeça floral e fresca, à qual sucede, numa alquimia misteriosa, um corpo encantador, poderoso e amadeirado.\r\n', b'1'),
-	(35, 'Moschina I Love', 'Moschino', 139, 100, 'Perfume', 'I Love Love é luxuoso e divertido: o último presente de Moschino para a mulher apaixonada, cheia de vida, diferente e divertida. I Love Love é tão jovem quanto os sentimentos que o inspiraram.', b'1');
+INSERT INTO `produto` (`id`, `nome`, `marca`, `imagem`, `preco_original`, `preco_venda`, `quantidade`, `categoria`, `descricao`, `ativo`) VALUES
+	(63, 'The Secret Temptation Masculino Eau de Toilette', 'Antonio Banderas', '1540782849148.jpg', 149, 149, 100, 'Perfume', 'Antonio Banderas seduz mesmo sem querer, seu sucesso é algo que simplesmente acontece. E é justamente a pouca importância que atribui ao seu dom que o torna ainda mais desejável. Esse é o segredo do seu sucesso. Uma fragrância sensual, refinada e extremamente sedutora. Um segredo revelado para homens modernos que não se importam com as regras pré-estabelecidas da sedução, para quem o natural se conjuga com o essencial.', b'1'),
+	(64, 'King of Seduction Absolute masculino Eau de Toilette', 'Antonio Banderas', '1540783108882.jpg', 94, 94, 100, 'Perfume', 'Antonio Banderas apresenta King of Seduction Absolute, uma nova fragrância refrescante e muito carismática, inspirada por King of Seduction. Um verdadeiro tributo aos poderes da sedução absoluta, encarnados pelo sedutor definitivo.', b'1'),
+	(65, 'Seduction in Bblack Eau de Toilette masculino', 'Antonio Banderas', '1540783240318.jpg', 79, 79, 100, 'Perfume', 'Antonio Banderas apresenta King of Seduction Absolute, uma nova fragrância refrescante e muito carismática, inspirada por King of Seduction. Um verdadeiro tributo aos poderes da sedução absoluta, encarnados pelo sedutor definitivo.', b'1'),
+	(66, 'Perfume Antonio Banderas The Golden Secret masculino Eau de Toilette', 'Antonio Banderas', '1540783388047.jpg', 74, 74, 100, 'Perfume', 'Para homens que não abrem mão da sedução e poder, The Golden Secrets chegou para potencializar essas sensações. Perfeito paras ser usado em ocasiões especiais, essa fragrância tem como segredo um concentrado de notas marcantes que traduzem esse segredo.', b'1'),
+	(67, 'Her Secret Temptation feminino Eau de Toilette', 'Antonio Banderas', '1540783448022.jpg', 99, 99, 100, 'Perfume', 'Uma combinação de frutas e cítricos intensificados por condimentos brilhantes. No coração da fragrância, a íris e a rosa acrescentam um toque colorido a um ramalhete de elegantes flores brancas. Na nota de fundo, a calidez do âmbar se funde em um acorde oriental, trazendo uma irresistível identidade e personalidade com as madeiras exóticas.', b'1'),
+	(68, 'Mr Burberry masculino Eau de Toilette', 'Burberry', '1540783778534.jpg', 150, 150, 100, 'Perfume', 'A nova fragrância para homens por Burberry capta a essência de Londres e seus momentos, fundindo aromas clássicos da perfumaria britânica com ingredientes inesperados. Notas de cabeça frescas, trabalhada de grapefruit e cardamomo, cortados com uma base sedutora de vetiver terra e sândalo.', b'1'),
+	(69, 'Perfume Antonio Banderas King of Seduction masculino', 'Antonio Banderas', '1540784240198.jpg', 94, 94, 100, 'Perfume', 'Uma combinação elegante e harmônica de frescor cítrico e força masculina, que abre a porta ao momento definitivo da sedução.\nUm furacão de elementos livres compõe uma essência de poderosos contrastes. Intensa, marcante e, ao mesmo tempo, fresca e elegante. Uma dança sensual entre força e delicadeza que transportará você ao reino da sedução.', b'1'),
+	(70, 'Udv Masculino Eau de Toilette', 'Ulric de Varens', '1540784417426.jpg', 55, 55, 100, 'Perfume', 'Chipre amadeirado, com notas de mandarina, limão, estragão, mimosa, gerânio, tabaco, musgo de carvalho e madeiras nobres. Para homens elegantes, clássicos e envolventes.', b'1');
 /*!40000 ALTER TABLE `produto` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela projeto_integrador.usuario
@@ -94,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `ativo` bit(1) NOT NULL,
   `perfil` varchar(255) DEFAULT 'caixa',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
 
 -- Copiando dados para a tabela projeto_integrador.usuario: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
@@ -114,13 +109,8 @@ CREATE TABLE IF NOT EXISTS `venda` (
   CONSTRAINT `fk_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.venda: ~4 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.venda: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `venda` DISABLE KEYS */;
-INSERT INTO `venda` (`id_venda`, `data_venda`, `id_cliente`) VALUES
-	(24, '2018-05-31', 16),
-	(25, '2018-05-31', 18),
-	(26, '2018-05-31', 18),
-	(27, '2018-05-31', 19);
 /*!40000 ALTER TABLE `venda` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

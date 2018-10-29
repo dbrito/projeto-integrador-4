@@ -10,13 +10,47 @@ public class Produto {
     private String codigo;
     private String nome;
     private String marca;
-    private double preco;
+    private String imagem;
+    private double preco_original;
+    private double preco_venda;
     private int quantidade;
     private String categoria;
     private String descricao;
 
+    public double getPrecoOriginal() {
+        return preco_original;
+    }
     
-    //Métodos de acesso
+    public String getPrecoOriginalFormatado() {
+        Locale ptBr = new Locale("pt", "BR");        
+        return NumberFormat.getCurrencyInstance(ptBr).format(this.preco_original).replace("R$ ", "");
+    }
+
+    public void setPrecoOriginal(double preco_original) {
+        this.preco_original = preco_original;
+    }
+
+    public double getPrecoVenda() {
+        return preco_venda;
+    }
+    
+    public String getPrecoVendaFormatado() {
+        Locale ptBr = new Locale("pt", "BR");        
+        return NumberFormat.getCurrencyInstance(ptBr).format(this.preco_venda).replace("R$ ", "");
+    }
+
+    public void setPrecoVenda(double preco_venda) {
+        this.preco_venda = preco_venda;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+        
     public int getId() {
         return id;
     }
@@ -54,20 +88,7 @@ public class Produto {
 
     public void setMarca(String marca) {
         this.marca = marca;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
-    
-    public String getPrecoFormatado() {
-        Locale ptBr = new Locale("pt", "BR");        
-        return NumberFormat.getCurrencyInstance(ptBr).format(this.preco).replace("R$ ", "");
-    }
+    }    
     
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;

@@ -11,12 +11,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-      registry.addResourceHandler("/estaticos/**")
-              .addResourceLocations("C:/Jobs/uploads");
+        registry.addResourceHandler("/static/**")
+            .addResourceLocations("file:///C:/Jobs/uploads/")
+            .resourceChain(true)
+            .addResolver(new PathResourceResolver());
     }
 }

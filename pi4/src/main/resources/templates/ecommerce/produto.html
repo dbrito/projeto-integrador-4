@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Arquivos Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Arquivos Bootstrap -->
+
+    <!-- Arquivo do FontAwesome -->
+    <!-- Arquivos de Fonte (Icones, Titulos etc) -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+
+    <link rel="icon" href="./img/favicon.png">
+    <title>The Secret Temptation Masculino Eau de Toilette</title>
+    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" style="background: #333;">
+        <!-- logo + busca + login + carrinho + icone menu mobile -->
+        <div class="container">
+            <nav class="row">
+                <h2 class="col-7 col-md-3 order-1 order-md-1"><a href="./index.html" style="text-decoration: none;">Perfumaria</a></h2>
+                <form class="d-none d-md-block col-12 col-md-6 order-3 order-md-2" action="buscar" method="GET">
+                    <div class="input-group input-group-lg">
+                        <input class="form-control" name="buscar" type="text" placeholder="O que você procura ?">
+                        <span class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+                <div class="actions col-5 col-md-3 order-2 order-md-3">
+                    <a href="./login.html">
+                        <i class="fa fa-user"></i>
+                        <span class="d-none d-lg-inline" style="font-size:14px">Entrar</span>
+                    </a>
+                    <a href="./carrinho.html">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span class="d-none d-lg-inline" style="font-size:14px">Carrinho</span>
+                    </a>
+                    <a class="d-lg-none parentclass" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                        href="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars" role="button"></i>
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <!-- categorias + busca mobile -->
+        <div class="row" style="background: #404040;">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg navbar-light">
+
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <a href="./categoria.html">PERFUMES</a>
+                            <a href="./categoria.html">MAQUIAGEM</a>
+                            <a href="./categoria.html">BANHO</a>
+                            <a href="./categoria.html">PRESENTES</a>
+                            <a href="./categoria.html">HOMENS</a>
+                            <a href="./categoria.html">MULHERES</a>
+                            <a class="font-weight-bold" href="./categoria.html">OUTLET </a>
+
+                            <form class="d-md-none" action="buscar" method="GET">
+                                <div class="input-group input-group-lg">
+                                    <input class="form-control" name="buscar" type="text" placeholder="Buscar por">
+                                    <span class="input-group-append">
+                                        <button class="btn btn-secondary" type="submit">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="padding-top: 40px">
+        <div class="detalhe-produto row">
+            <div class="col-12 col-md-8">
+                <img src="./img/prd5.jpg" alt="">
+            </div>
+            <div class="col-12 col-md-4 text-right">
+                <div style="background: #eee; padding: 20px;">
+                    <span class="marca font-weight-bold">Antonio Banderas</span>
+                    <span class="nome">The Secret Temptation Masculino Eau de Toilette</span>
+                    <span class="preco font-weight-bold">R$ 149,00</span>
+                    <a href="./carrinho.html">
+                        <span class="call-to-action font-weight-bold d-inline-block">
+                            <i class="fa fa-shopping-cart"></i>
+                            Comprar
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-12 col-md-9" style="margin-top:30px;">
+                <strong>Descrição:</strong><br>
+                Antonio Banderas seduz mesmo sem querer, seu sucesso é algo que simplesmente acontece. E é justamente a pouca importância que atribui ao seu dom que o torna ainda mais desejável. Esse é o segredo do seu sucesso. Uma fragrância sensual, refinada e extremamente sedutora. Um segredo revelado para homens modernos que não se importam com as regras pré-estabelecidas da sedução, para quem o natural se conjuga com o essencial.
+            </div>
+        </div>
+
+        <!-- Veja também -->
+        <div class="ofertas">
+            <h1 class="text-center">Veja Também</h1>
+            <hr>
+            <div class="produtos row text-center">
+                <th:block th:each="prd : ${relacionados}">
+                    <a th:href="@{'/produto/'+${prd.getId()}}" class="col-md-3 col-6 produto">
+                        <img th:src="@{'/static/'+ ${prd.getImagem()}}" alt="">
+                        <span th:text="${prd.getMarca()}" class="marca font-weight-bold">Antonio Banderas</span>
+                        <span th:text="${prd.getNome()}" class="nome">The Secret Temptation Masculino Eau de Toilette</span>
+                        <span th:text="${'R$ ' + prd.getPrecoVendaFormatado()}" class="preco font-weight-bold">R$ 149,00</span>
+                        <span class="call-to-action font-weight-bold d-inline-block">
+                            <i class="fa fa-shopping-cart"></i> COMPRAR
+                        </span>
+                    </a>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid links-uteis" style="background: #ccc; padding: 10px; margin-top: 30px; color: #333;">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-md-4 order-2">
+                    <strong>Links Úteis</strong><br>
+                    <a href="">Mais vendidos</a><br>
+                    <a href="">Novidades</a><br>
+                    <a href="">Ofertas</a><br>
+                </div>
+                <div class="col-6 col-md-4 order-3">
+                    <strong>Institucional</strong><br>
+                    <a href="">Sobre a Perfumaria</a><br>
+                    <a href="">Trabalhe Conosco</a><br>
+                    <a href="">Nossas Marcas</a><br>
+                </div>
+                <div class="col-md-4 order-1 order-md-3 text-right redes-sociais" style="font-size:30px;">
+                    <a href="">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid text-center" style="background: #404040; color: #FFF; padding: 10px;">
+        <small>© 2018 - Perfumaria</small>
+    </footer>
+</body>
+
+</html>
