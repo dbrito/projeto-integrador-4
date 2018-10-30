@@ -37,8 +37,9 @@ public class EcommerceController {
                 .addObject("relacionados", ProdutoDAO.listar("relacionados", false));        
     }
     
-    @GetMapping("/carrinho") //Categoria    
-    public String carrinho() {                
-        return "ecommerce/carrinho";
-    }
+    @GetMapping("/carrinho") //Carrinho    
+    public ModelAndView carrinho(HttpServletRequest req) {                        
+        return  new ModelAndView("ecommerce/carrinho")
+            .addObject("relacionados", ProdutoDAO.listar("relacionados", false));                
+    }        
 }

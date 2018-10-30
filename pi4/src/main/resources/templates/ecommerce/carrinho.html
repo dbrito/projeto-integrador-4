@@ -19,10 +19,7 @@
 
     <link rel="icon" href="./img/favicon.png">
     <title>Carrinho de Compras</title>
-    <link rel="stylesheet" href="./css/estilo.css">
-    <style>
-
-    </style>
+    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">    
 </head>
 
 <body>
@@ -30,7 +27,7 @@
         <!-- logo + busca + login + carrinho + icone menu mobile -->
         <div class="container">
             <nav class="row">
-                <h2 class="col-7 col-md-3 order-1 order-md-1"><a href="./index.html" style="text-decoration: none;">Perfumaria</a></h2>
+                <h2 class="col-7 col-md-3 order-1 order-md-1"><a href="/" style="text-decoration: none;">Perfumaria</a></h2>
                 <form class="d-none d-md-block col-12 col-md-6 order-3 order-md-2" action="buscar" method="GET">
                     <div class="input-group input-group-lg">
                         <input class="form-control" name="buscar" type="text" placeholder="O que você procura ?">
@@ -50,7 +47,7 @@
                         <i class="fa fa-shopping-cart"></i>
                         <span class="d-none d-lg-inline" style="font-size:14px">Carrinho</span>
                     </a>
-                    <a class="d-lg-none" class="parentclass" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    <a class="d-lg-none parentclass" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                         href="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fas fa-bars" role="button"></i>
                     </a>
@@ -133,7 +130,7 @@
                 <button type="button" class="btn btn-primary btn-lg">
                     <i class="fa fa-check"></i> FINALIZAR COMPRA
                 </button><br>
-                <a href="./index.html" type="button" class="btn btn-secondary btn-lg">
+                <a href="/" type="button" class="btn btn-secondary btn-lg">
                     <i class="fa fa-shopping-cart"></i> CONTINUAR COMPRANDO
                 </a>
             </div>
@@ -144,33 +141,17 @@
             <h1 class="text-center">Aproveite e Leve Também</h1>
             <hr>
             <div class="produtos row text-center">
-                <a href="./produto.html" class="col-md-4 col-6 produto">
-                    <img src="./img/prd1.jpg" alt="">
-                    <span class="marca font-weight-bold">Antonio Banderas</span>
-                    <span class="nome">The Secret Temptation Masculino Eau de Toilette</span>
-                    <span class="preco font-weight-bold">R$ 149,00</span>
-                    <span class="call-to-action font-weight-bold d-inline-block">
-                        <i class="fa fa-shopping-cart"></i> ADICIONAR
-                    </span>
-                </a>
-                <a href="./produto.html" class="col-md-4 col-6 produto">
-                    <img src="./img/prd2.jpg" alt="">
-                    <span class="marca font-weight-bold">Animale</span>
-                    <span class="nome">Animale for Men Masculino Eau de Toilette</span>
-                    <span class="preco font-weight-bold">R$ 86,00</span>
-                    <span class="call-to-action font-weight-bold d-inline-block">
-                        <i class="fa fa-shopping-cart"></i> ADICIONAR
-                    </span>
-                </a>
-                <a href="./produto.html" class="col-md-4 col-6 produto">
-                    <img src="./img/prd3.jpg" alt="">
-                    <span class="marca font-weight-bold">Animale</span>
-                    <span class="nome">Animale for Men Masculino Eau de Toilette</span>
-                    <span class="preco font-weight-bold">R$ 349,00</span>
-                    <span class="call-to-action font-weight-bold d-inline-block">
-                        <i class="fa fa-shopping-cart"></i> ADICIONAR
-                    </span>
-                </a>
+                <th:block th:each="prd, iterStat : ${relacionados}" th:if="${iterStat.index} < 4">
+                    <a th:href="@{'/produto/'+${prd.getId()}}" class="col-md-3 col-6 produto">
+                        <img th:src="@{'/static/'+ ${prd.getImagem()}}" alt="">
+                        <span th:text="${prd.getMarca()}" class="marca font-weight-bold">Antonio Banderas</span>
+                        <span th:text="${prd.getNome()}" class="nome">The Secret Temptation Masculino Eau de Toilette</span>
+                        <span th:text="${'R$ ' + prd.getPrecoVendaFormatado()}" class="preco font-weight-bold">R$ 149,00</span>
+                        <span class="call-to-action font-weight-bold d-inline-block">
+                            <i class="fa fa-shopping-cart"></i> COMPRAR
+                        </span>
+                    </a>
+                </th:block>                
             </div>
         </div>
     </div>

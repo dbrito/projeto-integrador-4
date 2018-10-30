@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
-            .addResourceLocations("file:///C:/Jobs/uploads/")
+            .addResourceLocations("file:///C:/Jobs/projeto-integrador-4/uploads/")
             .resourceChain(true)
             .addResolver(new PathResourceResolver());
     }

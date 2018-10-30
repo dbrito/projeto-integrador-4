@@ -18,11 +18,8 @@
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
 
     <link rel="icon" href="./img/favicon.png">
-    <title>The Secret Temptation Masculino Eau de Toilette</title>
-    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">
-    <style>
-
-    </style>
+    <title th:text="${produto.getNome()}"></title>
+    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">    
 </head>
 
 <body>
@@ -101,7 +98,7 @@
                     <span th:text="${produto.getNome()}" class="nome">The Secret Temptation Masculino Eau de Toilette</span>
                     <span th:if="${!produto.getPrecoOriginalFormatado().equals(produto.getPrecoVendaFormatado())}" th:text="${'de: R$' + produto.getPrecoOriginalFormatado()}" class="preco font-weight-bold" style="text-decoration:line-through;">R$ 149,00</span>
                     <span th:text="${'por: R$' + produto.getPrecoVendaFormatado()}" class="preco font-weight-bold">R$ 149,00</span>
-                    <a href="./carrinho.html">
+                    <a onclick="adicionaNoCarrinho(this); return false;" th:attr="product-id=${produto.getId()}" href="#">
                         <span class="call-to-action font-weight-bold d-inline-block">
                             <i class="fa fa-shopping-cart"></i>
                             Comprar
@@ -120,7 +117,7 @@
             <h1 class="text-center">Veja Também</h1>
             <hr>
             <div class="produtos row text-center">
-                <th:block th:each="prd : ${relacionados}">
+                <th:block th:each="prd, iterStat : ${relacionados}" th:if="${iterStat.index} < 4">
                     <a th:href="@{'/produto/'+${prd.getId()}}" class="col-md-3 col-6 produto">
                         <img th:src="@{'/static/'+ ${prd.getImagem()}}" alt="">
                         <span th:text="${prd.getMarca()}" class="marca font-weight-bold">Antonio Banderas</span>
@@ -168,6 +165,30 @@
     <footer class="container-fluid text-center" style="background: #404040; color: #FFF; padding: 10px;">
         <small>© 2018 - Perfumaria</small>
     </footer>
+
+    <script>
+        function adicionaNoCarrinho(e) {
+            var id = e.getAttribute('product-id'); 
+            
+            var itensCarrinho = localStorage.getItem('itensCarrinho');
+            if (itensCarrinho != null) {
+                itensCarrinho = JSON.parse(itensCarrinho);
+            } else {
+                itensCarrinho = {};
+            }
+
+            console.log(itensCarrinho);
+            if (itensCarrinho['P' + id]) { //Se o item já estiver no carrinho
+                itensCarrinho['P' + id] = itensCarrinho['P' + id] + 1; //Incremento a quantidade
+            } else {
+                itensCarrinho['P' + id] = 1; //Adiciono no carrinho
+            }             
+            
+            window.localStorage.setItem('itensCarrinho', JSON.stringify(itensCarrinho));
+            window.location.href="/carrinho"
+
+        }
+    </script>
 </body>
 
 </html>
