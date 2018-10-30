@@ -31,13 +31,10 @@ public class EcommerceController {
     }
     
     @GetMapping("/produto/{id}") //Categoria    
-    public ModelAndView produto(@PathVariable("id") int id) {                
-        List<Produto> relacionados = new ArrayList<Produto>();
-        relacionados = ProdutoDAO.listar("relacionados", false);
-        
+    public ModelAndView produto(@PathVariable("id") int id) {                                        
         return  new ModelAndView("ecommerce/produto")
-                .addObject("novidades", ProdutoDAO.listar("novidades", false))
-                .addObject("maisVendidos", ProdutoDAO.listar("mais-vendidos", false));        
+                .addObject("produto", ProdutoDAO.obter(id))
+                .addObject("relacionados", ProdutoDAO.listar("relacionados", false));        
     }
     
     @GetMapping("/carrinho") //Categoria    

@@ -175,62 +175,33 @@ public class ProdutoDAO {
         return listaProdutos;        
     }    
     
-    public static Produto obter(int id) throws SQLException, Exception {
-        //Compõe uma String de consulta que considera apenas o cliente
-        //com o ID informado e que esteja ativo ("enabled" com "true")
-        String sql = "SELECT * FROM produto WHERE (id=?)";
-
-        //Conexão para abertura e fechamento
-        Connection connection = null;
-        //Statement para obtenção através da conexão, execução de
-        //comandos SQL e fechamentos
-        PreparedStatement preparedStatement = null;
-        //Armazenará os resultados do banco de dados
-        ResultSet result = null;
+    public static Produto obter(int id) {        
+        Connection con = ConnectionFactory.getConnetion();
+        PreparedStatement stmt = null;                
         try {
-            //Abre uma conexão com o banco de dados
-            connection = ConnectionFactory.getConnetion();
-            //Cria um statement para execução de instruções SQL
-            preparedStatement = connection.prepareStatement(sql);
-            //Configura os parâmetros do "PreparedStatement"
-            preparedStatement.setInt(1, id);            
-            
-            //Executa a consulta SQL no banco de dados
-            result = preparedStatement.executeQuery();
-            
-            //Verifica se há pelo menos um resultado
-            if (result.next()) {                
-                //Cria uma instância de Cliente e popula com os valores do BD
+            stmt = con.prepareStatement("SELECT * FROM produto where id=?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();                        
+                        
+            if (rs.next()) {                                
                 Produto produto = new Produto();
-                produto.setId(result.getInt("id"));
-                produto.setNome(result.getString("nome"));
-                produto.setMarca(result.getString("marca"));                
-                produto.setPrecoVenda(result.getDouble("preco"));
-                produto.setCategoria(result.getString("categoria"));
-                produto.setQuantidade(result.getInt("quantidade"));
-                produto.setDescricao(result.getString("descricao"));
-                produto.setEnabled(result.getInt("ativo"));                
-                //Retorna o resultado
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setMarca(rs.getString("marca"));                
+                produto.setImagem(rs.getString("imagem"));                
+                produto.setPrecoOriginal(rs.getDouble("preco_original"));
+                produto.setPrecoVenda(rs.getDouble("preco_venda"));
+                produto.setCategoria(rs.getString("categoria"));
+                produto.setQuantidade(rs.getInt("quantidade"));
+                produto.setDescricao(rs.getString("descricao"));
+                produto.setEnabled(rs.getInt("ativo"));                                
                 return produto;
             }            
+        } catch (SQLException ex) {
+            System.out.print(ex);            
         } finally {
-            //Se o result ainda estiver aberto, realiza seu fechamento
-            if (result != null && !result.isClosed()) {
-                result.close();
-            }
-            //Se o statement ainda estiver aberto, realiza seu fechamento
-            if (preparedStatement != null && !preparedStatement.isClosed()) {
-                preparedStatement.close();
-            }
-            //Se a conexão ainda estiver aberta, realiza seu fechamento
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-
-        //Se chegamos aqui, o "return" anterior não foi executado porque
-        //a pesquisa não teve resultados
-        //Neste caso, não há um elemento a retornar, então retornamos "null"
+            ConnectionFactory.closeConnection(con, stmt);
+        }       
         return null;
     }
 }
