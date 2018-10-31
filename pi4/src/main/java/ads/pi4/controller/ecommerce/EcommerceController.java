@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -41,5 +42,18 @@ public class EcommerceController {
     public ModelAndView carrinho(HttpServletRequest req) {                        
         return  new ModelAndView("ecommerce/carrinho")
             .addObject("relacionados", ProdutoDAO.listar("relacionados", false));                
+    }        
+    
+    
+    @GetMapping("/ecommerce/api/carrinho") //Carrinho    
+    @ResponseBody
+    public List<Produto> pegaItens(HttpServletRequest req) {                                                
+        List<Produto> itensCarrinho = new ArrayList<>();
+        String[] idsProdutos = req.getParameter("produtos").split(",");
+        int[] ids = new int[idsProdutos.length];        
+        for (int i=0; i<ids.length; i++) {
+            itensCarrinho.add(ProdutoDAO.obter(Integer.parseInt(idsProdutos[i])));
+        }
+        return itensCarrinho;
     }        
 }

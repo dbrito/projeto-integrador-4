@@ -87,8 +87,7 @@ public class ProdutoDAO {
     // listar os produtos
     public static List<Produto>  listar (String filtro, Boolean categoria){
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;        
-        
+        PreparedStatement stmt = null;                
         List<Produto> produtos = new ArrayList<>();        
         try {            
             stmt = con.prepareStatement("SELECT * FROM produto where ativo=1");
@@ -196,6 +195,38 @@ public class ProdutoDAO {
                 produto.setDescricao(rs.getString("descricao"));
                 produto.setEnabled(rs.getInt("ativo"));                                
                 return produto;
+            }            
+        } catch (SQLException ex) {
+            System.out.print(ex);            
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }       
+        return null;
+    }
+    
+    public static List<Produto> obter(String ids) {        
+        Connection con = ConnectionFactory.getConnetion();
+        PreparedStatement stmt = null;                
+        List<Produto> produtos = new ArrayList<>();        
+        try {
+            stmt = con.prepareStatement("SELECT * FROM produto where id IN (?)");
+            stmt.setString(1, ids);
+            ResultSet rs = stmt.executeQuery();                        
+                        
+            if (rs.next()) {    
+                System.out.println("asdasd");
+                Produto produto = new Produto();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setMarca(rs.getString("marca"));                
+                produto.setImagem(rs.getString("imagem"));                
+                produto.setPrecoOriginal(rs.getDouble("preco_original"));
+                produto.setPrecoVenda(rs.getDouble("preco_venda"));
+                produto.setCategoria(rs.getString("categoria"));
+                produto.setQuantidade(rs.getInt("quantidade"));
+                produto.setDescricao(rs.getString("descricao"));
+                produto.setEnabled(rs.getInt("ativo"));                                
+                produtos.add(produto);
             }            
         } catch (SQLException ex) {
             System.out.print(ex);            
