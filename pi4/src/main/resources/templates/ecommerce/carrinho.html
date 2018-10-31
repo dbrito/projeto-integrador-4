@@ -17,12 +17,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
 
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+
     <link rel="icon" href="./img/favicon.png">
     <title>Carrinho de Compras</title>
-    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">    
+    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">
 </head>
 
-<body>
+<body ng-app="carrinhoApp">
     <div class="container-fluid" style="background: #333;">
         <!-- logo + busca + login + carrinho + icone menu mobile -->
         <div class="container">
@@ -88,45 +91,29 @@
     </div>
 
 
-    <div class="container carrinho" style="padding-top: 40px">
+    <div class="container carrinho" ng-controller="carrinhoController" style="padding-top: 40px">
         <!-- Carrinho de Compra -->
         <h1 class="text-center">Carrinho de Compras</h1>
         <hr>
-        <div class="row item-carrinho">
-            <div class="col-5 col-md-2"> <img src="./img/prd5.jpg" alt=""> </div>
+        <div class="row item-carrinho" ng-repeat="produto in produtos">
+            <div class="col-5 col-md-2"> <img ng-src="{{'/static/' + produto.imagem}}" alt=""> </div>
             <div class="col-7 col-md-4">
-                <span class="marca font-weight-bold">Antonio Banderas</span><br>
-                <span class="nome">The Secret Temptation Masculino Eau de Toilette</span><br>
+                <span class="marca font-weight-bold">{{produto.marca}}</span><br>
+                <span class="nome">{{produto.nome + produto.quant}}</span><br>
             </div>
             <div class="col-5 col-md-3 text-center" style="padding-top:10px;">
-                <span><i class="fa fa-plus"></i></span>
-                <input type="text" class="form-control d-inline" value="1" style="max-width: 50px">
-                <span><i class="fa fa-minus"></i></span><br>
-                <span>Remover</span>
+                <span style="cursor: pointer"><i class="fa fa-plus"></i></span>
+                <input type="text" ng-model="produto.quant" class="form-control d-inline" style="max-width: 50px">
+                <span style="cursor: pointer"><i class="fa fa-minus"></i></span><br>
+                <span ng-click="console.log(produto)" style="cursor: pointer">Remover</span>
             </div>
             <div class="col-7 col-md-3 text-right">
-                <strong>R$ 199,00</strong>
+                <strong ng-init="itemTotal = produto.precoVenda * produto.quant; Total = Total + itemTotal">{{itemTotal | currency:'R$'}}</strong>
             </div>
         </div>
-        <div class="row item-carrinho">
-            <div class="col-5 col-md-2"> <img src="./img/prd6.jpg" alt=""> </div>
-            <div class="col-7 col-md-4">
-                <span class="marca font-weight-bold">Antonio Banderas</span><br>
-                <span class="nome">The Secret Temptation Masculino Eau de Toilette</span><br>
-            </div>
-            <div class="col-5 col-md-3 text-center" style="padding-top:10px;">
-                <span><i class="fa fa-plus"></i></span>
-                <input type="text" class="form-control d-inline" value="1" style="max-width: 50px">
-                <span><i class="fa fa-minus"></i></span><br>
-                <span>Remover</span>
-            </div>
-            <div class="col-7 col-md-3 text-right">
-                <strong>R$ 199,00</strong>
-            </div>
-        </div>
-        <div class="row">
+        <div class="row" ng-if="produtos.length > 0">
             <div class="col-12 total text-right">
-                <span>Total: R$398,00</span><br>
+                <span>Total: R${{Total}}</span><br>
                 <button type="button" class="btn btn-primary btn-lg">
                     <i class="fa fa-check"></i> FINALIZAR COMPRA
                 </button><br>
@@ -151,7 +138,7 @@
                             <i class="fa fa-shopping-cart"></i> COMPRAR
                         </span>
                     </a>
-                </th:block>                
+                </th:block>
             </div>
         </div>
     </div>
@@ -190,5 +177,35 @@
         <small>© 2018 - Perfumaria</small>
     </footer>
 </body>
+
+<script>
+    var carrinhoApp = angular.module('carrinhoApp', []);
+    carrinhoApp.controller('carrinhoController', function($scope, $http) {
+        $scope.Total = 0;
+
+        $scope.produtos = [];
+
+        $scope.somaTotal = function() {
+
+        }
+
+        $http({
+            method: 'GET',
+            url: './ecommerce/api/carrinho?produtos=70,69'
+        }).then(function successCallback(response) {
+            var produtos = response.data;
+            produtos.forEach(function (item) {
+                item.quant = 2;
+                // item.precoOriginal = numberToReal(item.precoOriginal);
+                // item.precoVenda = numberToReal(item.precoVenda);
+            })
+            $scope.produtos = produtos;
+        }, function errorCallback(response) {
+            alert('Erro ao solicitar o catalogo de produtos.');
+        });
+
+        $scope.message = 'Everyone come and see how good I look!';
+    });
+</script>
 
 </html>
