@@ -92,7 +92,8 @@
 
 
     <div class="container carrinho" ng-controller="carrinhoController" style="padding-top: 40px">
-        <!-- Carrinho de Compra -->
+
+        <!-- Itens do Carrinho de Compra -->
         <h1 class="text-center">Carrinho de Compras</h1>
         <hr>
         <div class="row item-carrinho" ng-repeat="produto in produtos">
@@ -101,25 +102,33 @@
                 <span class="marca font-weight-bold">{{produto.marca}}</span><br>
                 <span class="nome">{{produto.nome + produto.quant}}</span><br>
             </div>
-            <div class="col-5 col-md-3 text-center" style="padding-top:10px;">
-                <span style="cursor: pointer"><i class="fa fa-plus"></i></span>
-                <input type="text" ng-model="produto.quant" class="form-control d-inline" style="max-width: 50px">
-                <span style="cursor: pointer"><i class="fa fa-minus"></i></span><br>
-                <span ng-click="console.log(produto)" style="cursor: pointer">Remover</span>
+            <div class="col-5 col-md-3 text-center" style="padding-top:10px; user-select: none;">
+                <a ng-click="incrementar(produto)">
+                    <span style="cursor: pointer"><i class="fa fa-plus"></i></span>
+                </a>
+                <input type="text" ng-model="produto.quant" class="form-control d-inline" disabled style="max-width: 50px">
+                <a ng-click="decrementar(produto)">
+                    <span style="cursor: pointer"><i class="fa fa-minus"></i></span><br>
+                </a>
+                <a ng-click="remover(produto)">
+                    <span ng-click="teste(produto)" style="cursor: pointer">Remover</span>
+                </a>
             </div>
             <div class="col-7 col-md-3 text-right">
-                <strong ng-init="itemTotal = produto.precoVenda * produto.quant; Total = Total + itemTotal">{{itemTotal | currency:'R$'}}</strong>
+                <strong>{{'R$' + (produto.precoVenda * produto.quant).toString().numberToReal()}}</strong>
             </div>
         </div>
+
+        <!-- Total -->
         <div class="row" ng-if="produtos.length > 0">
             <div class="col-12 total text-right">
-                <span>Total: R${{Total}}</span><br>
-                <button type="button" class="btn btn-primary btn-lg">
-                    <i class="fa fa-check"></i> FINALIZAR COMPRA
-                </button><br>
+                <span>Total: R${{Total.toString().numberToReal()}}</span><br>
                 <a href="/" type="button" class="btn btn-secondary btn-lg">
                     <i class="fa fa-shopping-cart"></i> CONTINUAR COMPRANDO
                 </a>
+                <button type="button" class="btn btn-primary btn-lg">
+                    <i class="fa fa-check"></i> FINALIZAR COMPRA
+                </button>
             </div>
         </div>
 
@@ -179,30 +188,80 @@
 </body>
 
 <script>
+    String.prototype.numberToReal = function () {
+        var numero = Number(this).toFixed(2).split('.');
+        numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+        return numero.join(',');
+    }
+
     var carrinhoApp = angular.module('carrinhoApp', []);
     carrinhoApp.controller('carrinhoController', function($scope, $http) {
         $scope.Total = 0;
 
         $scope.produtos = [];
 
-        $scope.somaTotal = function() {
-
+        $scope.incrementar = function (prd) {
+            prd.quant ++;
+            $scope.atualizaTotal();
         }
 
-        $http({
-            method: 'GET',
-            url: './ecommerce/api/carrinho?produtos=70,69'
-        }).then(function successCallback(response) {
-            var produtos = response.data;
-            produtos.forEach(function (item) {
-                item.quant = 2;
-                // item.precoOriginal = numberToReal(item.precoOriginal);
-                // item.precoVenda = numberToReal(item.precoVenda);
-            })
-            $scope.produtos = produtos;
-        }, function errorCallback(response) {
-            alert('Erro ao solicitar o catalogo de produtos.');
-        });
+        $scope.decrementar = function (prd) {
+            if (prd.quant -1 <= 0) prd.quant = 1;
+            else prd.quant --;
+            $scope.atualizaTotal();
+        }
+
+        $scope.remover = function (prd) {
+            var indice = $scope.produtos.indexOf(prd);
+            $scope.produtos.splice(indice, 1);
+            $scope.atualizaTotal();
+        }
+
+        $scope.atualizaLocalStorage = function () {
+            $scope.Total = 0;
+            $scope.produtos.forEach(function (prd) {
+                $scope.Total += (prd.quant * prd.precoVenda);
+            });
+        }
+
+        $scope.atualizaTotal = function () {
+            $scope.Total = 0;
+            var itensCarrinho = {};
+            $scope.produtos.forEach(function (prd) {
+                itensCarrinho['P'+prd.id] = prd.quant;
+                $scope.Total += (prd.quant * prd.precoVenda);
+            });
+            localStorage.setItem('itensCarrinho', JSON.stringify(itensCarrinho));
+        }
+
+        var itensCarrinho = localStorage.getItem('itensCarrinho');
+        if (itensCarrinho != null) {
+            itensCarrinho = JSON.parse(itensCarrinho);
+            var ids = [];
+            for (var prd in itensCarrinho) {
+                ids.push(prd.replace('P', ''))
+            }
+            if (ids.length == 0) return;
+            pegarProdutos(ids);
+        } else {
+            itensCarrinho = {};
+        }
+
+        function pegarProdutos(produtos) {
+            $http({
+                method: 'GET',
+                url: './ecommerce/api/carrinho?produtos=' + produtos.toString()
+            }).then(function successCallback(response) {
+                var produtos = response.data;
+                produtos.forEach(function (item) {
+                    item.quant = itensCarrinho['P'+item.id];
+                })
+                $scope.produtos = produtos;
+                $scope.atualizaTotal();
+            }, function errorCallback(response) {
+                alert('Erro ao solicitar o catalogo de produtos.');
+            });
+        }
 
         $scope.message = 'Everyone come and see how good I look!';
     });
