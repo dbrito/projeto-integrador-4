@@ -82,16 +82,16 @@ public class AdminController {
     @PostMapping("/api/upload") //Upload de fotos
     public ResponseEntity<Object> login(@RequestParam("arquivo") MultipartFile arquivo, HttpServletRequest req) {                
         try {            
-//            if (req.getSession(true).getAttribute("admin") != null) {;;
+            if (req.getSession(true).getAttribute("admin") != null) {;;
                 byte[] bytesArquivo = arquivo.getBytes();
                 String extensao = arquivo.getOriginalFilename().split("\\.")[1];
                 String nomeArquivoFinal = (new Date()).getTime() + "." + extensao;
                 Path destino = Paths.get("C:/Jobs/uploads/" + nomeArquivoFinal);
                 Files.write(destino, bytesArquivo);                
                 return ResponseEntity.status(HttpStatus.OK).body(nomeArquivoFinal);                
-//            } else {
-//                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");                
-//            }            
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");                
+            }            
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao realizar o upload do arquivo");                
         }                

@@ -1,5 +1,6 @@
 package ads.pi4.controller.ecommerce;
 
+import ads.pi4.DAO.ClienteDAO;
 import ads.pi4.DAO.ProdutoDAO;
 import ads.pi4.model.Produto;
 import java.util.ArrayList;
@@ -19,41 +20,30 @@ public class EcommerceController {
     
     @GetMapping //Home do ecommerce
     public ModelAndView home(HttpServletRequest req) {                
+        req.getSession(true).setAttribute("cliente", ClienteDAO.obter(29));
         return  new ModelAndView("ecommerce/index")
+                .addObject("cliente", ClienteDAO.obter(29))
                 .addObject("novidades", ProdutoDAO.listar("novidades", false))
                 .addObject("maisVendidos", ProdutoDAO.listar("mais-vendidos", false));                
     }
     
     @GetMapping("/categoria/{categoria}") //Categoria    
     public ModelAndView categoria(@PathVariable("categoria") String categoria) {                
-        return  new ModelAndView("ecommerce/categoria")
+        return  new ModelAndView("ecommerce/categoria")                
                 .addObject("novidades", ProdutoDAO.listar("novidades", false))
                 .addObject("maisVendidos", ProdutoDAO.listar("mais-vendidos", false));        
     }
     
     @GetMapping("/produto/{id}") //Categoria    
     public ModelAndView produto(@PathVariable("id") int id) {                                        
-        return  new ModelAndView("ecommerce/produto")
+        return  new ModelAndView("ecommerce/produto")                                
                 .addObject("produto", ProdutoDAO.obter(id))
                 .addObject("relacionados", ProdutoDAO.listar("relacionados", false));        
     }
     
     @GetMapping("/carrinho") //Carrinho    
     public ModelAndView carrinho(HttpServletRequest req) {                        
-        return  new ModelAndView("ecommerce/carrinho")
-            .addObject("relacionados", ProdutoDAO.listar("relacionados", false));                
-    }        
-    
-    
-    @GetMapping("/ecommerce/api/carrinho") //Carrinho    
-    @ResponseBody
-    public List<Produto> pegaItens(HttpServletRequest req) {                                                
-        List<Produto> itensCarrinho = new ArrayList<>();
-        String[] idsProdutos = req.getParameter("produtos").split(",");
-        int[] ids = new int[idsProdutos.length];        
-        for (int i=0; i<ids.length; i++) {
-            itensCarrinho.add(ProdutoDAO.obter(Integer.parseInt(idsProdutos[i])));
-        }
-        return itensCarrinho;
-    }        
+        return  new ModelAndView("ecommerce/carrinho")                
+                .addObject("relacionados", ProdutoDAO.listar("relacionados", false));                
+    }                    
 }

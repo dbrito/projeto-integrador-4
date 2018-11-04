@@ -15,10 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-public class ProdutoDAO {
-    
-    private static int totalProdutos = 0;
-    private static List<Produto> listaProdutos = new ArrayList<Produto>();
+public class ProdutoDAO {          
         
     public static int inserir (Produto produto){
         Connection con = ConnectionFactory.getConnetion();

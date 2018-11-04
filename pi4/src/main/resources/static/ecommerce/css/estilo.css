@@ -12,7 +12,7 @@ nav {
     text-align: center
 }
 nav a {
-    line-height: 48px;
+    line-height: 38px;
     margin-right: 14px;
     color: #FFF;
 }
@@ -21,6 +21,18 @@ nav a:hover {
 }
 nav .actions {
     font-size: 20px;
+}
+
+.quantItensCarrinho {
+    position: absolute;
+    background: #cd0303;
+    display: inline-block;
+    border-radius: 100%;
+    height: 15px;
+    width: 15px;
+    line-height: 15px;
+    font-size: 10px;
+    top: 15px;
 }
 
 .categories {
