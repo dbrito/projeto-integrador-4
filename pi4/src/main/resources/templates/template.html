@@ -43,11 +43,13 @@
                     </div>
                 </form>
                 <div class="actions col-5 col-md-3 order-2 order-md-3">
-                    <a href="/entrar">
+                    <a th:if="${session.cliente != null}" href="/minha-conta">
                         <i class="fa fa-user"></i>
-                        <span th:if="${session.cliente.getNome() != null}" th:text="${ 'Olá ' + session.cliente.getNome().split(' ')[0]}"
-                            class="d-none d-lg-inline" style="font-size:14px"></span>
-                        <span th:unless="${session.cliente.getNome() != null}" class="d-none d-lg-inline" style="font-size:14px">Entrar</span>
+                        <span th:text="${ session.cliente.getNome() }" class="d-none d-lg-inline" style="font-size:14px"></span>
+                    </a>
+                    <a th:unless="${session.cliente != null}" href="/entrar">
+                        <i class="fa fa-user"></i>
+                        <span class="d-none d-lg-inline" style="font-size:14px">Entrar</span>
                     </a>
                     <a href="/carrinho">
                         <span class="quantItensCarrinho">0</span>
@@ -68,7 +70,7 @@
 
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div class="navbar-nav">
-                            <a href="/categoria/perfume">PERFUMES 66</a>
+                            <a href="/categoria/perfume">PERFUMES</a>
                             <a href="./categoria.html">MAQUIAGEM</a>
                             <a href="./categoria.html">BANHO</a>
                             <a href="./categoria.html">PRESENTES</a>

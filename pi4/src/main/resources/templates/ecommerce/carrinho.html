@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <!-- Importo o conteudo do head (scripts, css) através arquivo template.html -->
 <head th:insert="template :: head(title='Carrinho de Compras')"></head>
 <!-- AngularJS -->
@@ -20,7 +19,7 @@
             <div class="col-5 col-md-2"> <img ng-src="{{'/static/' + produto.imagem}}" alt=""> </div>
             <div class="col-7 col-md-4">
                 <span class="marca font-weight-bold">{{produto.marca}}</span><br>
-                <span class="nome">{{produto.nome + produto.quant}}</span><br>
+                <span class="nome">{{produto.nome}}</span><br>
             </div>
             <div class="col-5 col-md-3 text-center" style="padding-top:10px; user-select: none;">
                 <a ng-click="incrementar(produto)">
@@ -154,5 +153,4 @@
         }
     });
 </script>
-
 </html>

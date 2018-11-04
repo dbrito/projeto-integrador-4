@@ -45,5 +45,11 @@ public class EcommerceController {
     public ModelAndView carrinho(HttpServletRequest req) {                        
         return  new ModelAndView("ecommerce/carrinho")                
                 .addObject("relacionados", ProdutoDAO.listar("relacionados", false));                
-    }                    
+    }
+    
+    @GetMapping("/checkout") //Carrinho    
+    public ModelAndView checkout(HttpServletRequest req) {                        
+        if (req.getSession(true).getAttribute("clientes") == null) return  new ModelAndView("redirect:/carrinho");
+        return  new ModelAndView("ecommerce/checkout");                
+    }
 }
