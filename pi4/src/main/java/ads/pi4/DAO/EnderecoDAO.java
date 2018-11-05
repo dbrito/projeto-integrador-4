@@ -33,6 +33,29 @@ public class EnderecoDAO {
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return novo;
     }
+    
+    public static Endereco atualizar (Endereco end){
+        Connection con = ConnectionFactory.getConnetion();
+        PreparedStatement stmt = null; 
+        Endereco endereco = null;
+        
+        try {            
+            stmt = con.prepareStatement("UPDATE endereco SET cep=?, endereco=?, numero=?, complemento=?, bairro=?, cidade=?, estado=? WHERE (id=?)");
+            stmt.setString(1, end.getCep());
+            stmt.setString(2, end.getEndereco());
+            stmt.setInt(3, end.getNumero());
+            stmt.setString(4, end.getComplemento());
+            stmt.setString(5, end.getBairro());
+            stmt.setString(6, end.getCidade());
+            stmt.setString(7, end.getEstado());            
+            stmt.setInt(8, end.getId());                        
+            stmt.execute();
+            endereco = obter(end.getId());
+        }
+        catch (SQLException ex) { System.out.print(ex); }
+        finally{ ConnectionFactory.closeConnection(con, stmt); }
+        return endereco;
+    }
 
     public static Endereco obter (int id){
         Connection con = ConnectionFactory.getConnetion();
@@ -58,6 +81,7 @@ public class EnderecoDAO {
         end.setEndereco(rs.getString("endereco"));
         end.setNumero(rs.getInt("numero"));
         end.setComplemento(rs.getString("complemento"));
+        end.setBairro(rs.getString("bairro"));
         end.setCidade(rs.getString("cidade"));
         end.setEstado(rs.getString("estado"));
         return end;

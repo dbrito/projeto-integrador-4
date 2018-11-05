@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Arquivos Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Arquivo do FontAwesome -->
+    <!-- Arquivos de Fonte (Icones, Titulos etc) -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico">
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" th:href="@{/ecommerce/css/estilo.css}">
+    <title>Checkout</title>
+</head>
+<body ng-app="carrinhoApp">
+    <div class="container-fluid" style="background: #333;">
+        <h2 style="font-family:Pacifico; color: #FFF; line-height: 98px; text-align: center">
+            Perfumaria
+        </h2>
+    </div>
+    <div class="container" ng-controller="carrinhoController">
+        <div ng-if="compraFinalizada" class="text-center" style="font-size: 40px; font-weight: bold;">
+            <p>
+                Compra Realizado com sucesso !<br>
+                Identificador: <strong style="color:green">#{{compra.identificador}}</strong>
+            </p>
+            <img th:src="@{/ecommerce/img/venda.png}" alt="" style="width: 100%; max-width: 400px;"><br>
+            <a href="/" type="button" class="btn btn-primary btn-lg" style="background: #cd0303">
+                <i class="fa fa-check"></i> VOLTAR PARA A HOME
+            </a><br>
+        </div>
+
+        <div class="row" ng-if="!compraFinalizada">
+            <h1 class="text-center col-md-12" style="margin: 20px 0;">Checkout</h1>
+            <div class="col-md-6">
+                <h4>Dados do Cliente</h4>
+                <strong>Nome: {{editarEnd}}</strong>
+                {{cliente.nome + ' - ' + cliente.cpf}}<br>
+
+                <strong>Telefone: </strong> {{cliente.telefone}}<br>
+                <strong>E-mail:</strong> {{cliente.email}}
+
+                <div  style="margin-top: 30px;">
+                    <strong style="font-size:24px;">Endereço de Entrega</strong>
+                    <a href="#" ng-if="!editarEnd" ng-click="toggleForm(); $event.preventDefault()" class="btn btn-sm btn-primary" style="float: right; margin-top: 4px">
+                        <i class="fa fa-edit fa-lg"></i> Alterar endereço
+                    </a>
+                </div>
+
+                <div ng-if="!editarEnd">
+                    <strong>Endereço: </strong> {{cliente.endereco.endereco}}<br>
+                    <strong>CEP: </strong> {{cliente.endereco.cep}}<br>
+                    <strong>Número: </strong> {{cliente.endereco.numero}}<br>
+                    <strong>Complemento: </strong> {{cliente.endereco.complemento}}<br>
+                    <strong>Cidade: </strong> {{cliente.endereco.cidade}}<br>
+                    <strong>Estado: </strong> {{cliente.endereco.estado}}<br>
+                </div>
+
+                <div ng-if="editarEnd" class="row">
+                    <div class="form-group col-md-4">
+                        <label for="cep">CEP:</label>
+                        <input ng-model="endereco.cep" type="text" class="form-control" name="cep" id="cep" required>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="endereco">Endereço:</label>
+                        <input ng-model="endereco.endereco" type="text" class="form-control" name="endereco" id="endereco" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="numero">Número:</label>
+                        <input ng-model="endereco.numero" type="text" class="form-control" name="numero" id="numero" required>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="complemento">Complemento:</label>
+                        <input ng-model="endereco.complemento" type="text" class="form-control" name="complemento" id="complemento" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="cidade">Cidade:</label>
+                        <input ng-model="endereco.cidade" type="text" class="form-control" name="cidade" id="cidade" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="estado">Estado:</label>
+                        <input ng-model="endereco.estado" type="text" class="form-control" name="estado" id="estado" required>
+                    </div>
+                    <div class="form-group col-md-12 text-right">
+                        <a href="#" ng-click="toggleForm(); $event.preventDefault()" type="button" class="btn btn-secondary">Cancelar</a>
+                        <a href="#" ng-click="atualizarEndereco(); $event.preventDefault()" type="button" class="btn btn-primary">Atualizar</a>
+                    </div>
+                </div>
+
+
+                <h4 style="margin-top: 30px;">Métodos de Pagamento</h4>
+                <input type="radio" name="" id="" checked>
+                <label style="line-height: 40px;">
+                    <i class="fa fa-barcode" style="font-size:40px;"></i>
+                    Boleto Bancario
+                </label>
+            </div>
+            <div class="col-md-6">
+                <h4>Itens</h4>
+                <table class="table table-bordered text-right">
+                    <thead>
+                        <td colspan="2">Produto</td>
+                        <td>Valor unitário</td>
+                        <td>Valor total</td>
+                    </thead>
+                    <tr ng-repeat="produto in produtos">
+                        <td>
+                            <img ng-src="{{'/static/' + produto.imagem}}" alt="" width="40">
+                        </td>
+                        <td>
+                            {{produto.nome + ' -- ' + produto.quant + 'x' }}
+                        </td>
+                        <td>
+                            {{ 'R$' + produto.precoVenda.toString().numberToReal() }}
+                        </td>
+                        <td>
+                            <strong>{{'R$' + (produto.precoVenda * produto.quant).toString().numberToReal()}}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><h5>Frete Grátis</h5></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><h5>Total R$ {{total.toString().numberToReal()}}</h5></td>
+                    </tr>
+                </table>
+                <a ng-click="finalizarVenda(); $event.preventDefault()" href="#" type="button" class="btn btn-primary btn-lg" style="background: #cd0303; float: right;">
+                    <i class="fa fa-check"></i> Concluir Compra
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Importo o conteudo do Footer através arquivo template.html -->
+    <div th:insert="template :: footer"></div>
+    <script>
+        String.prototype.numberToReal = function () {
+            var numero = Number(this).toFixed(2).split('.');
+            numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+            return numero.join(',');
+        }
+
+        var carrinhoApp = angular.module('carrinhoApp', []);
+        carrinhoApp.controller('carrinhoController', function($scope, $http) {
+            $scope.total = 0;
+            $scope.editarEnd = false;
+            $scope.produtos = [];
+            $scope.endereco = {};
+            $scope.compra = {};
+            $scope.compraFinalizada = false;
+
+            $scope.toggleForm = function () {
+                $scope.editarEnd = !$scope.editarEnd;
+            }
+
+            //Recupero os itens do carrinho guardados no localstorage
+            var itensCarrinho = localStorage.getItem('itensCarrinho');
+            if (itensCarrinho != null) {
+                itensCarrinho = JSON.parse(itensCarrinho);
+                var ids = [];
+                for (var prd in itensCarrinho) {
+                    ids.push(prd.replace('P', ''))
+                }
+                if (ids.length == 0) return;
+                pegarProdutos(ids);
+            } else {
+                itensCarrinho = {};
+            }
+
+            //Solicito as informações dos produtos
+            function pegarProdutos(produtos) {
+                $http({
+                    method: 'GET',
+                    url: './ecommerce/api/carrinho?produtos=' + produtos.toString()
+                }).then(function successCallback(response) {
+                    var produtos = response.data;
+                    var total = 0;
+                    produtos.forEach(function (item) {
+                        item.quant = itensCarrinho['P'+item.id];
+                        total += item.quant * item.precoVenda;
+                    })
+                    $scope.total = total;
+                    $scope.produtos = produtos;
+                    console.log($scope.produtos);
+                }, function errorCallback(response) {
+                    alert('Erro ao solicitar o catalogo de produtos.');
+                });
+            }
+
+            //Solicito os dados do cliente
+            pegarCliente();
+            function pegarCliente() {
+                $http({
+                    method: 'GET',
+                    url: './ecommerce/api/cliente'
+                }).then(function successCallback(response) {
+                    $scope.cliente = response.data;
+                    $scope.endereco = response.data.endereco;
+                }, function errorCallback(response) {
+                    alert('Erro ao solicitar os dados do cliente.');
+                });
+            }
+
+            $scope.atualizarEndereco = function () {
+                console.log('here');
+                $.ajax({
+                    type: "POST",
+                    url: '/ecommerce/api/endereco',
+                    data: JSON.stringify($scope.endereco),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.endereco = data;
+                        $scope.cliente.endereco = data;
+                        $scope.toggleForm();
+                        $scope.$apply();
+                    },
+                    error: (data)=> {
+                        alert('Erro ao cadastrar o produto, tente novamente mais tarde.');
+                    }
+                });
+            }
+
+            $scope.finalizarVenda = function () {
+                console.log('asdadasd');
+                var itens = [];
+                for (var i=0; i < $scope.produtos.length; i++) {
+                    var produto = $scope.produtos[i];
+                    var item = {
+                        quantidade: produto.quant,
+                        precoProduto: produto.precoVenda,
+                        precoTotal: produto.quant * produto.precoVenda,
+                        produto: produto
+                    }
+                    itens.push(item);
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    url: '/ecommerce/api/checkout',
+                    data: JSON.stringify(itens),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.compra = data;
+                        $scope.compraFinalizada = true;
+                        localStorage.removeItem('itensCarrinho');
+                        $scope.$apply();
+                    },
+                    error: (data)=> {
+                        alert('Erro ao finalizar a compra, tente novamente mais tarde.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

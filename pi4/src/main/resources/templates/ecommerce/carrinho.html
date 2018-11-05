@@ -4,7 +4,6 @@
 <head th:insert="template :: head(title='Carrinho de Compras')"></head>
 <!-- AngularJS -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-
 <body ng-app="carrinhoApp">
     <!-- Importo o conteudo do menu através arquivo template.html -->
     <div th:insert="template :: menu"></div>
@@ -45,9 +44,9 @@
                 <a href="/" type="button" class="btn btn-secondary btn-lg">
                     <i class="fa fa-shopping-cart"></i> CONTINUAR COMPRANDO
                 </a>
-                <button type="button" class="btn btn-primary btn-lg">
+                <a href="/checkout" type="button" class="btn btn-primary btn-lg" style="background: #cd0303">
                     <i class="fa fa-check"></i> FINALIZAR COMPRA
-                </button>
+                </a>
             </div>
         </div>
 

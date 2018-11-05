@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!-- Importo o conteudo do head (scripts, css) através arquivo template.html -->
+<head th:insert="template :: head(title='Minha Compra')"></head>
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<body ng-app="minhaContaApp">
+    <!-- Importo o conteudo do menu através arquivo template.html -->
+    <div th:insert="template :: menu"></div>
+
+
+    <div class="container carrinho" ng-controller="minhaContaController" style="padding-top: 40px">
+        <div class="ofertas">
+            <h1 class="text-center">Meus pedidos</h1>
+            <hr>
+            <div class="produtos row text-center">
+                <div ng-repeat="compra in compras" class="compra" style="border: 3px solid #404040;">
+                    <div class="row">
+                        <h3 class="col-12" style="color:green">#{{compra.identificador}}</h3>
+                        <h3 class="col-12">{{compra.data + ' | ' + compra.status}}</h3>
+                        <table class="table col-10">
+                            <tr>
+                                <td colspan="2">Produto</td>
+                                <td>Quantidade</td>
+                                <td>Preço Unitário</td>
+                                <td>Preço Total</td>
+                            </tr>
+                            <tr ng-repeat="item in compra.itens">
+                                <td>
+                                    <img ng-src="{{'/static/' + item.produto.imagem}}" width="100" alt="">
+                                </td>
+                                <td>{{item.produto.nome}}</td>
+                                <td>{{item.quantidade}}x</td>
+                                <td>R$ {{item.precoProduto.toString().numberToReal()}}</td>
+                                <td>R$ {{item.precoTotal.toString().numberToReal()}}</td>
+                            </tr>
+                        </table>
+                        <h3 class="col-2">R$ {{compra.total.toString().numberToReal()}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Importo o conteudo do Footer através arquivo template.html -->
+    <div th:insert="template :: footer"></div>
+</body>
+
+<script>
+    String.prototype.numberToReal = function () {
+        var numero = Number(this).toFixed(2).split('.');
+        numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+        return numero.join(',');
+    }
+
+    var minhaContaApp = angular.module('minhaContaApp', []);
+    minhaContaApp.controller('minhaContaController', function($scope, $http) {
+        $scope.compras = [];
+
+        pegarCompras();
+        function pegarCompras(produtos) {
+            $http({
+                method: 'GET',
+                url: './ecommerce/api/compras'
+            }).then(function successCallback(response) {
+                var compras = response.data;
+                compras.forEach(function (compra) {
+                    compra.total = compra.itens.reduce((total, item) => total + item.precoTotal, 0);
+                })
+                $scope.compras = compras;
+            }, function errorCallback(response) {
+                alert('Erro ao solicitar o catalogo de produtos.');
+            });
+        }
+    });
+</script>
+</html>

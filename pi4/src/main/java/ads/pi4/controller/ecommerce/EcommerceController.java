@@ -2,6 +2,8 @@ package ads.pi4.controller.ecommerce;
 
 import ads.pi4.DAO.ClienteDAO;
 import ads.pi4.DAO.ProdutoDAO;
+import ads.pi4.DAO.VendaDAO;
+import ads.pi4.model.Cliente;
 import ads.pi4.model.Produto;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,14 @@ public class EcommerceController {
                 .addObject("maisVendidos", ProdutoDAO.listar("mais-vendidos", false));                
     }
     
+    @GetMapping("/minha-conta") //Categoria    
+    public ModelAndView categoria(HttpServletRequest req) {     
+        Cliente cliente = (Cliente) req.getSession(true).getAttribute("cliente");
+        if (cliente == null) return  new ModelAndView("redirect:/");
+        return  new ModelAndView("ecommerce/minha-conta")
+                .addObject("compras", VendaDAO.listarPorCliente(cliente.getId()));
+    }
+    
     @GetMapping("/categoria/{categoria}") //Categoria    
     public ModelAndView categoria(@PathVariable("categoria") String categoria) {                
         return  new ModelAndView("ecommerce/categoria")                
@@ -47,9 +57,9 @@ public class EcommerceController {
                 .addObject("relacionados", ProdutoDAO.listar("relacionados", false));                
     }
     
-    @GetMapping("/checkout") //Carrinho    
+    @GetMapping("/checkout") //Checkout    
     public ModelAndView checkout(HttpServletRequest req) {                        
-        if (req.getSession(true).getAttribute("clientes") == null) return  new ModelAndView("redirect:/carrinho");
+        if (req.getSession(true).getAttribute("cliente") == null) return  new ModelAndView("redirect:/carrinho");
         return  new ModelAndView("ecommerce/checkout");                
     }
 }

@@ -65,7 +65,7 @@ public class ClienteDAO {
         cliente.setCpf(rs.getString("cpf"));
         cliente.setNome(rs.getString("nome"));
         cliente.setTelefone(rs.getString("telefone"));
-        cliente.setEmail(rs.getString("telefone"));
+        cliente.setEmail(rs.getString("email"));
         cliente.setEndereco(EnderecoDAO.obter(rs.getInt("id_endereco")));
         cliente.setAtivo(rs.getInt("ativo"));
         return cliente;
