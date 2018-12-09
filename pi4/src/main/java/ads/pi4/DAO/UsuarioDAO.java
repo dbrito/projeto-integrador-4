@@ -20,7 +20,7 @@ public class UsuarioDAO {
     private static List<Usuario> listaUsuarios = new ArrayList<Usuario>();
     
     // inserir no banco de dados
-    public static void inserir (Usuario usuario){
+    public static int inserir (Usuario usuario){
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;
         
@@ -34,14 +34,18 @@ public class UsuarioDAO {
             stmt.setString(4, usuario.getPass());
             stmt.setString(5, usuario.getPerfil());             
             stmt.setInt(6, 1); 
-            stmt.execute();            
+            stmt.execute();        
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         } catch (SQLException ex) {
             System.out.print(ex);
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             ConnectionFactory.closeConnection(con, stmt);
         }
-        
+        return 0;
  }
     
     public static void atualizar(Usuario usuario) throws SQLException, Exception {
