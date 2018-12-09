@@ -31,9 +31,9 @@
         <div class="container">
             <nav class="row">
                 <h2 class="col-7 col-md-3 order-1 order-md-1"><a href="/" style="text-decoration: none;">Perfumaria</a></h2>
-                <form class="d-none d-md-block col-12 col-md-6 order-3 order-md-2" action="buscar" method="GET">
+                <form class="d-none d-md-block col-12 col-md-6 order-3 order-md-2" action="/buscar" method="GET">
                     <div class="input-group input-group-lg">
-                        <input class="form-control" name="buscar" type="text" placeholder="O que você procura ?">
+                        <input class="form-control" name="valor" type="text" placeholder="O que você procura ?">
                         <span class="input-group-append">
                             <button class="btn btn-secondary" type="submit">
                                 <i class="fa fa-search"></i>
@@ -70,16 +70,11 @@
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div class="navbar-nav">
                             <a href="/categoria/perfume">PERFUMES</a>
-                            <a href="./categoria.html">MAQUIAGEM</a>
-                            <a href="./categoria.html">BANHO</a>
-                            <a href="./categoria.html">PRESENTES</a>
-                            <a href="./categoria.html">HOMENS</a>
-                            <a href="./categoria.html">MULHERES</a>
-                            <a class="font-weight-bold" href="./categoria.html">OUTLET </a>
+                            <a href="/categoria/sabonete">MAQUIAGEM</a>
 
-                            <form class="d-md-none" action="buscar" method="GET">
+                            <form class="d-md-none" action="/buscar" method="GET">
                                 <div class="input-group input-group-lg">
-                                    <input class="form-control" name="buscar" type="text" placeholder="Buscar por">
+                                    <input class="form-control" name="valor" type="text" placeholder="Buscar por">
                                     <span class="input-group-append">
                                         <button class="btn btn-secondary" type="submit">
                                             <i class="fa fa-search"></i>

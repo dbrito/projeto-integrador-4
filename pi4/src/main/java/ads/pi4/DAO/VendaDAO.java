@@ -96,7 +96,7 @@ public class VendaDAO {
         catch (SQLException ex) { ex.printStackTrace(); }
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return venda;
-    } 
+    }        
     
     public static List<Venda> listarPorCliente (int idCliente){
         Connection con = ConnectionFactory.getConnetion();

@@ -36,67 +36,68 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @GetMapping({"/"}) //Tela de Login    
+    @GetMapping({"/"}) //Tela de Login
     public String login(HttpServletRequest req) {
         System.out.println("/");
-        HttpSession sessao = req.getSession(true);            
+        HttpSession sessao = req.getSession(true);
         if (sessao.getAttribute("admin") != null) {
             return "redirect:/admin/painel";
-        }        
+        }
         return "admin/login";
     }
-    
+
     @PostMapping("/") //Efetuar Login
-    public ResponseEntity<Object> login(@RequestParam(value = "user", required = true) String user, @RequestParam(value = "pass", required = true) String pass, HttpServletRequest req) {                
+    public ResponseEntity<Object> login(@RequestParam(value = "user", required = true) String user, @RequestParam(value = "pass", required = true) String pass, HttpServletRequest req) {
         try {
-            HttpSession sessao = req.getSession(true);            
+            HttpSession sessao = req.getSession(true);
             Usuario admin;
-            admin = UsuarioDAO.efetuarLogin(user, pass);            
+            admin = UsuarioDAO.efetuarLogin(user, pass);
             if (admin != null) {
-                sessao.setAttribute("admin", admin);  
-                return ResponseEntity.status(HttpStatus.OK).body("Login efetuado com sucesso.");                
+                sessao.setAttribute("admin", admin);
+                return ResponseEntity.status(HttpStatus.OK).body("Login efetuado com sucesso.");
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");                
-            }            
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");
+            }
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");                
-        }                
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");
+        }
     }
-    
+
     @GetMapping("/logout") //Efetuar Logout
-    public String logout(HttpServletRequest req) {        
-        HttpSession sessao = req.getSession(true);            
+    public String logout(HttpServletRequest req) {
+        HttpSession sessao = req.getSession(true);
         sessao.removeAttribute("admin");
         return "redirect:/admin/";
     }
-    
+
     @GetMapping("/painel") //Tela do BackOffice
     public String painel(HttpServletRequest req) {
-        HttpSession sessao = req.getSession(true);            
+        HttpSession sessao = req.getSession(true);
         if (sessao.getAttribute("admin") == null) {
             return "redirect:/admin/";
-        }        
+        }
         return "admin/painel";
     }
-    
+
     @PostMapping("/api/upload") //Upload de fotos
-    public ResponseEntity<Object> login(@RequestParam("arquivo") MultipartFile arquivo, HttpServletRequest req) {                
-        try {            
+    public ResponseEntity<Object> login(@RequestParam("arquivo") MultipartFile arquivo, HttpServletRequest req) {
+        try {
             if (req.getSession(true).getAttribute("admin") != null) {;;
                 byte[] bytesArquivo = arquivo.getBytes();
                 String extensao = arquivo.getOriginalFilename().split("\\.")[1];
                 String nomeArquivoFinal = (new Date()).getTime() + "." + extensao;
-                Path destino = Paths.get("C:/Jobs/uploads/" + nomeArquivoFinal);
-                Files.write(destino, bytesArquivo);                
-                return ResponseEntity.status(HttpStatus.OK).body(nomeArquivoFinal);                
+                Path destino = Paths.get("C:/Jobs/projeto-integrador-4/uploads/" + nomeArquivoFinal);
+                Files.write(destino, bytesArquivo);
+                return ResponseEntity.status(HttpStatus.OK).body(nomeArquivoFinal);
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");                
-            }            
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuario ou senha inválidos.");
+            }
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao realizar o upload do arquivo");                
-        }                
+            System.out.println(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao realizar o upload do arquivo");
+        }
     }
-    
+
     @PostMapping("/api/produtos") //Cadastro de produto
     public ResponseEntity<Object> cadastar(@RequestBody Produto pd) {
         try {
@@ -107,7 +108,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
         }
     };
-    
+
     @PostMapping("/api/produtos/{id}") //Cadastro de produto
     public ResponseEntity<Object> editar(@PathVariable("id") int id, @RequestBody Produto pd) {
         try {
@@ -118,15 +119,15 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
         }
     };
-            
+
     @GetMapping("/api/produtos") //JSON com a lista de Produtos
     @ResponseBody
     public List<Produto> listarProdutos(HttpServletResponse response) {
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");                                                                 
-        return ProdutoDAO.listar(null, false);                
+        response.setCharacterEncoding("UTF-8");
+        return ProdutoDAO.listar("", false);
     }
-    
+
     @DeleteMapping("/api/produtos/{id}") //Exclui um produto especifico
     public ResponseEntity<Object> excluirProduto(@PathVariable("id") int id, HttpServletResponse response) {
         try {
@@ -135,6 +136,6 @@ public class AdminController {
         } catch (Exception ex) {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao excluir o produto.<br>" + ex.getMessage());
-        }        
-    }           
+        }
+    }
 }

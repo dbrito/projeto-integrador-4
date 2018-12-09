@@ -38,17 +38,17 @@
 
                 <ul id="menu-content" class="menu-content collapse out">
                     <li>
-                        <a href="#/produtos"><i class="fa fa-shopping-cart fa-lg"></i> Gerenciar Produtos</a>
+                        <a href="#/gerenciar-produtos"><i class="fa fa-shopping-cart fa-lg"></i> Gerenciar Produtos</a>
                     </li>
-                    <!-- <li>
-                        <a href="#/usuarios"><i class="fa fa-user fa-lg"></i> Gerenciar Usuários</a>
-                    </li> -->
+                    <li th:if="${session.admin.getPerfil().equals('gerente')}">
+                        <a href="#/gerenciar-usuarios"><i class="fa fa-user fa-lg"></i> Gerenciar Usuários</a>
+                    </li>
+                    <li th:if="${session.admin.getPerfil().equals('gerente')}">
+                        <a href="#/relatorio"><i class="fa fa-file-text fa-lg"></i> Relatório</a>
+                    </li>
                     <li>
-                        <a href="#/relatorio"><i class="fa fa-file-chart-line fa-lg"></i> Relatório</a>
+                        <a href="#/editar-conta"><i class="fa fa-edit fa-lg"></i> Editar Conta</span></a>
                     </li>
-                    <!-- <li>
-                        <a href="#/gerenciar-conta"><i class="fa fa-edit fa-lg"></i> Gerenciar Conta</span></a>
-                    </li> -->
                     <li>
                         <a href="./logout"><i class="fa fa-times fa-lg"></i> Sair</span></a>
                     </li>
@@ -72,15 +72,26 @@
 
         // configure our routes
         painelApp.config(function($routeProvider) {
-            $routeProvider.when('/', {
+            $routeProvider
+            .when('/', {
                 templateUrl : '/admin/home.html',
                 controller  : 'mainController'
-            }).when('/produtos', {
+            })
+            .when('/gerenciar-produtos', {
                 templateUrl : '/admin/produtos.html',
                 controller  : 'produtosController'
-            }).when('/relatorio', {
-                templateUrl : '/admin/relatorios.html',
-                controller  : 'contactController'
+            })
+            .when('/gerenciar-usuarios', {
+                templateUrl : '/admin/usuarios.html', //Tem que criar esse arquivo
+                controller  : 'usuariosController'
+            })
+            .when('/relatorio', {
+                templateUrl : '/admin/relatorio.html', //Tem que criar esse arquivo
+                controller  : 'relatorioController'
+            })
+            .when('/editar-conta', {
+                templateUrl : '/admin/conta.html', //Tem que criar esse arquivo
+                controller  : 'contaController'
             });
         });
 
@@ -239,8 +250,16 @@
             };
         });
 
-        painelApp.controller('relatorioController', function($scope, $http) {
+        painelApp.controller('usuariosController', function($scope, $http) {
+            //Criar a lógica da tela de gerenciar usuários
+        });
 
+        painelApp.controller('relatorioController', function($scope, $http) {
+            //Criar a lógica da tela de relatórios
+        });
+
+        painelApp.controller('contaController', function($scope, $http) {
+            //Criar a lógica da editar conta
         });
     </script>
 </body>

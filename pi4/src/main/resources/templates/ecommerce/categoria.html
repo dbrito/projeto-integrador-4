@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!-- Importo o conteudo do head (scripts, css) através arquivo template.html -->
+<head th:insert="template :: head(title='Perfumaria: Masculinos, Femininos e mais')"></head>
+
+<body>
+    <!-- Importo o conteudo do Menu através arquivo template.html -->
+    <div th:insert="template :: menu"></div>
+
+    <div class="container" style="padding-top: 40px">
+        <!-- Ofertas -->
+        <div class="ofertas">
+
+
+            <h1 th:if="${produtos.size()}" class="text-center" th:text="${produtos.get(0).getCategoria()}">Novidades</h1>
+            <hr>
+            <div class="produtos row text-center">
+                <th:block th:each="prd : ${produtos}">
+                    <a th:href="@{'/produto/'+${prd.getId()}}" class="col-md-3 col-6 produto">
+                        <img th:src="@{'/static/'+ ${prd.getImagem()}}" alt="">
+                        <span th:text="${prd.getMarca()}" class="marca font-weight-bold">Antonio Banderas</span>
+                        <span th:text="${prd.getNome()}" class="nome">The Secret Temptation Masculino Eau de Toilette</span>
+                        <span th:text="${'R$ ' + prd.getPrecoVendaFormatado()}" class="preco font-weight-bold">R$ 149,00</span>
+                        <span class="call-to-action font-weight-bold d-inline-block">
+                            <i class="fa fa-shopping-cart"></i> COMPRAR
+                        </span>
+                    </a>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- Importo o conteudo do Footer através arquivo template.html -->
+    <div th:insert="template :: footer"></div>
+</body>
+</html>

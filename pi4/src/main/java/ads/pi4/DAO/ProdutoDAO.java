@@ -15,14 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-public class ProdutoDAO {          
-        
+public class ProdutoDAO {
+
     public static int inserir (Produto produto){
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;        
-        try {            
+        PreparedStatement stmt = null;
+        try {
             stmt = con.prepareStatement("INSERT INTO produto (nome, marca, imagem, preco_original, preco_venda, quantidade, categoria, descricao, ativo) VALUES(?,?,?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            // passando os dados para o insert            
+            // passando os dados para o insert
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getMarca());
             stmt.setString(3, produto.getImagem());
@@ -31,205 +31,160 @@ public class ProdutoDAO {
             stmt.setInt(6, produto.getQuantidade());
             stmt.setString(7, produto.getCategoria());
             stmt.setString(8, produto.getDescricao());
-            stmt.setInt(9, 1);            
-            stmt.execute(); 
+            stmt.setInt(9, 1);
+            stmt.execute();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
-                return rs.getInt(1);                
-            }            
+                return rs.getInt(1);
+            }
         } catch (SQLException ex) {
-            System.out.print(ex);            
+            System.out.print(ex);
         } finally{
-            ConnectionFactory.closeConnection(con, stmt);            
-        }        
+            ConnectionFactory.closeConnection(con, stmt);
+        }
         return 0;
     }
-    
-    public static void atualizar(Produto produto) throws SQLException, Exception {        
+
+    public static void atualizar(Produto produto) throws SQLException, Exception {
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;        
-        try {            
+        PreparedStatement stmt = null;
+        try {
             stmt = con.prepareStatement("UPDATE produto SET nome=?, marca=?, imagem=?, preco_original=?, preco_venda=?, quantidade=?, categoria=?, descricao=? WHERE (id=?)");
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getMarca());
             stmt.setString(3, produto.getImagem());
             stmt.setDouble(4, produto.getPrecoOriginal());
             stmt.setDouble(5, produto.getPrecoVenda());
-            stmt.setInt(6, produto.getQuantidade());            
+            stmt.setInt(6, produto.getQuantidade());
             stmt.setString(7, produto.getCategoria());
             stmt.setString(8, produto.getDescricao());
-            stmt.setInt(9, produto.getId());                        
+            stmt.setInt(9, produto.getId());
             stmt.execute();
         } catch (SQLException ex) {
-            System.out.print(ex);            
+            System.out.print(ex);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-     
-    public static void excluir(int id) throws SQLException, Exception {        
+
+    public static void excluir(int id) throws SQLException, Exception {
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;        
+        PreparedStatement stmt = null;
         try {
-            stmt = con.prepareStatement("UPDATE produto SET ativo=0 WHERE (id=?)");            
-            stmt.setInt(1, id);                        
+            stmt = con.prepareStatement("UPDATE produto SET ativo=0 WHERE (id=?)");
+            stmt.setInt(1, id);
             stmt.execute();
         } catch (SQLException ex) {
-            System.out.print(ex);            
+            System.out.print(ex);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-     
+
     // listar os produtos
     public static List<Produto>  listar (String filtro, Boolean categoria){
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;                
-        List<Produto> produtos = new ArrayList<>();        
-        try {            
-            stmt = con.prepareStatement("SELECT * FROM produto where ativo=1");
+        PreparedStatement stmt = null;
+        List<Produto> produtos = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM produto WHERE ativo=1";
+            if (categoria) {
+                query += " AND categoria='"+ filtro +"'";
+            } else if (filtro.equals("novidades")) {
+                query += "  ORDER BY id DESC";
+            }
+            stmt = con.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()) {                
-                Produto produto = new Produto();
-                produto.setId(rs.getInt("id"));                
-                produto.setNome(rs.getString("nome"));
-                produto.setMarca(rs.getString("marca"));
-                produto.setImagem(rs.getString("imagem"));
-                produto.setPrecoOriginal(rs.getDouble("preco_original"));
-                produto.setPrecoVenda(rs.getDouble("preco_venda"));
-                produto.setQuantidade(rs.getInt("quantidade"));
-                produto.setCategoria(rs.getString("categoria"));
-                produto.setDescricao(rs.getString("descricao"));
-                produto.setEnabled(rs.getInt("ativo"));
-                produtos.add(produto);
+
+            while (rs.next()) {
+                produtos.add(parseResultItem(rs));
             }
         } catch (SQLException ex) {
-            System.out.print(ex);            
+            System.out.print(ex);
         } finally{
             ConnectionFactory.closeConnection(con, stmt);
-        }      
-        Collections.shuffle(produtos);
+        }
+
+        if (filtro.equals("maisVendidos") || filtro.equals("relacionados")) Collections.shuffle(produtos);
         return produtos;
     }
-        
-    public static List<Produto> procurar(String valor) throws SQLException, Exception {        
-        String sql = "SELECT * FROM produto WHERE ((UPPER(nome) LIKE UPPER(?) "
-            + "OR UPPER(codigo) LIKE UPPER(?) OR UPPER(marca) LIKE UPPER(?)) AND enabled=1)";        
-        List<Produto> listaProdutos = null;        
-        Connection connection = null;        
-        PreparedStatement preparedStatement = null;
-        //Armazenará os resultados do banco de dados
-        ResultSet result = null;
-        try {
-            //Abre uma conexão com o banco de dados
-            connection = ConnectionFactory.getConnetion();
-            //Cria um statement para execução de instruções SQL
-            preparedStatement = connection.prepareStatement(sql);
-            //Configura os parâmetros do "PreparedStatement"
-            preparedStatement.setString(1, "%" + valor + "%");
-            preparedStatement.setString(2, "%" + valor + "%");
-            preparedStatement.setString(3, "%" + valor + "%");            
-            //Executa a consulta SQL no banco de dados
-            result = preparedStatement.executeQuery();
-            
-            //Itera por cada item do resultado
-            while (result.next()) {
-                //Se a lista não foi inicializada, a inicializa
-                if (listaProdutos == null) {
-                    listaProdutos = new ArrayList<Produto>();
-                }
-                //Cria uma instância de Cliente e popula com os valores do BD
-                Produto produto = new Produto();
-                produto.setId(result.getInt("id"));
-                produto.setCodigo(result.getString("codigo"));
-                produto.setNome(result.getString("nome"));
-                produto.setMarca(result.getString("marca"));
-                produto.setPrecoOriginal(result.getDouble("preco"));
-                produto.setQuantidade(result.getInt("quantidade"));
-                produto.setDescricao(result.getString("descricao"));
-                produto.setCategoria(result.getString("categoria"));
-                produto.setEnabled(result.getInt("enabled"));
-                //Adiciona a instância na lista
-                listaProdutos.add(produto);
-            }
-        } finally {
-            //Se o result ainda estiver aberto, realiza seu fechamento
-            if (result != null && !result.isClosed()) {
-                result.close();
-            }
-            //Se o statement ainda estiver aberto, realiza seu fechamento
-            if (preparedStatement != null && !preparedStatement.isClosed()) {
-                preparedStatement.close();
-            }
-            //Se a conexão ainda estiver aberta, realiza seu fechamento
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-        //Retorna a lista de clientes do banco de dados
-        return listaProdutos;        
-    }    
-    
-    public static Produto obter(int id) {        
+
+    public static List<Produto> procurar(String valor) {
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;                
+        PreparedStatement stmt = null;
+        List<Produto> produtos = new ArrayList<>();
+
         try {
-            stmt = con.prepareStatement("SELECT * FROM produto where id=?");
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();                        
-                        
-            if (rs.next()) {                                
-                Produto produto = new Produto();
-                produto.setId(rs.getInt("id"));
-                produto.setNome(rs.getString("nome"));
-                produto.setMarca(rs.getString("marca"));                
-                produto.setImagem(rs.getString("imagem"));                
-                produto.setPrecoOriginal(rs.getDouble("preco_original"));
-                produto.setPrecoVenda(rs.getDouble("preco_venda"));
-                produto.setCategoria(rs.getString("categoria"));
-                produto.setQuantidade(rs.getInt("quantidade"));
-                produto.setDescricao(rs.getString("descricao"));
-                produto.setEnabled(rs.getInt("ativo"));                                
-                return produto;
-            }            
+            String query = "SELECT * FROM produto WHERE ((UPPER(nome) LIKE UPPER(?) "
+            + "OR UPPER(marca) LIKE UPPER(?)) AND ativo=1)";
+            stmt = con.prepareStatement(query);
+            stmt.setString(1, "%" + valor + "%");
+            stmt.setString(2, "%" + valor + "%");
+            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                produtos.add(parseResultItem(rs));
+            }
         } catch (SQLException ex) {
-            System.out.print(ex);            
+            System.out.print(ex);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
-        }       
+        }
+        return produtos;
+    }
+
+    public static Produto obter(int id) {
+        Connection con = ConnectionFactory.getConnetion();
+        PreparedStatement stmt = null;
+        try {
+            stmt = con.prepareStatement("SELECT * FROM produto WHERE id=?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return parseResultItem(rs);
+            }
+        } catch (SQLException ex) {
+            System.out.print(ex);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
         return null;
     }
-    
-    public static List<Produto> obter(String ids) {        
+
+    public static List<Produto> obter(String ids) {
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;                
-        List<Produto> produtos = new ArrayList<>();        
+        PreparedStatement stmt = null;
+        List<Produto> produtos = new ArrayList<>();
         try {
-            stmt = con.prepareStatement("SELECT * FROM produto where id IN (?)");
+            stmt = con.prepareStatement("SELECT * FROM produto WHERE id IN (?)");
             stmt.setString(1, ids);
-            ResultSet rs = stmt.executeQuery();                        
-                        
-            if (rs.next()) {    
-                System.out.println("asdasd");
-                Produto produto = new Produto();
-                produto.setId(rs.getInt("id"));
-                produto.setNome(rs.getString("nome"));
-                produto.setMarca(rs.getString("marca"));                
-                produto.setImagem(rs.getString("imagem"));                
-                produto.setPrecoOriginal(rs.getDouble("preco_original"));
-                produto.setPrecoVenda(rs.getDouble("preco_venda"));
-                produto.setCategoria(rs.getString("categoria"));
-                produto.setQuantidade(rs.getInt("quantidade"));
-                produto.setDescricao(rs.getString("descricao"));
-                produto.setEnabled(rs.getInt("ativo"));                                
-                produtos.add(produto);
-            }            
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                produtos.add(parseResultItem(rs));
+            }
         } catch (SQLException ex) {
-            System.out.print(ex);            
+            System.out.print(ex);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
-        }       
+        }
         return null;
+    }
+
+    private static Produto parseResultItem(ResultSet rs) throws SQLException {
+        Produto produto = new Produto();
+        produto.setId(rs.getInt("id"));
+        produto.setNome(rs.getString("nome"));
+        produto.setMarca(rs.getString("marca"));
+        produto.setImagem(rs.getString("imagem"));
+        produto.setPrecoOriginal(rs.getDouble("preco_original"));
+        produto.setPrecoVenda(rs.getDouble("preco_venda"));
+        produto.setQuantidade(rs.getInt("quantidade"));
+        produto.setCategoria(rs.getString("categoria"));
+        produto.setDescricao(rs.getString("descricao"));
+        produto.setEnabled(rs.getInt("ativo"));
+        return produto;
     }
 }
