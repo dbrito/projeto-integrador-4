@@ -1,35 +1,35 @@
 package ads.pi4;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.Select;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//import java.util.List;
+//import java.util.concurrent.TimeUnit;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+//import org.junit.AfterClass;
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertNotEquals;
+//
+//import org.junit.BeforeClass;
+//import org.junit.FixMethodOrder;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.junit.runners.MethodSorters;
+//import org.openqa.selenium.*;
+//import org.openqa.selenium.support.ui.Select;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.test.context.junit4.SpringRunner;
+//import org.openqa.selenium.By;
+//import org.openqa.selenium.WebDriver;
+//import org.openqa.selenium.chrome.ChromeDriver;
+//import org.openqa.selenium.support.ui.ExpectedConditions;
+//import org.openqa.selenium.support.ui.WebDriverWait;
+//
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class ProjetoIntegrador4ApplicationTests {
 
-    private static WebDriver driver; //Instanciamos o Selenium
+//    private static WebDriver driver; //Instanciamos o Selenium
 
     /*@BeforeClass
     public static void acessar() {

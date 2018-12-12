@@ -1,0 +1,67 @@
+<h1><i class="fa fa-money fa-lg"></i> Gerenciar Vendas</h1>
+
+<!-- Lista de Pedidos -->
+<table class="table table-hover">
+    <div class="alert fade" role="alert"></div>
+    <thead>
+        <tr>
+            <th scope="col">Identificador</th>
+            <th scope="col">Status</th>
+            <th scope="col">Data Venda</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="vnd in listaPedidos">
+            <td>{{vnd.identificador}}</td>
+            <td>{{vnd.status}}</td>
+            <td>{{vnd.data}}</td>
+            <td>
+                <a ng-click="editarPedido(vnd)" onclick="return false" href="#" title="Editar">
+                    <i class="fa fa-edit fa-lg"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Atualizar Venda </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/pedidos" method="post" id="formulario">
+                    <div class="row"> 
+                       <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nome">Identificador: </label> 
+                                <input ng-model="pedido.identificador" type="text" style="color:green" class="fors.im-control" name="identificador" id="identificador" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="text-align: center">
+                                <label for="status">Status Pedido:</label>
+                                <select ng-model="pedido.status" class="form-control" name="status" id="status">
+                                    <option value="Pagamento pendente">Pagamento pendente</option>
+                                    <option value="Pagamento aprovado">Pagamento aprovado</option>
+                                    <option value="Pagamento aprovado">Produto enviado</option>
+                                    <option value="Pagamento aprovado">Produto Entregue</option>
+                                </select>
+                                </div>
+                            
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="salvarPedido()">Atualizar</button>
+            </div>
+               
+        </div>
+    </div>

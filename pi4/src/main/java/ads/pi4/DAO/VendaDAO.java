@@ -24,7 +24,7 @@ public class VendaDAO {
         try {
             stmt = con.prepareStatement(""
                     + "INSERT INTO venda (id_cliente, identificador, id_endereco, status, data_venda) "
-                    + "VALUES(?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+                    + "VALUES(?,?,?,?,?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, venda.getCliente().getId());
             stmt.setString(2, "P" + (new Date()).getTime());
             stmt.setInt(3, venda.getEndereco().getId());
@@ -56,7 +56,7 @@ public class VendaDAO {
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;                        
         try {
-            stmt = con.prepareStatement("INSERT INTO item_venda (id_produto, id_venda, quantidade, preco_produto, preco_total) VALUES (?, ?, ?, ?, ?)");                        
+            stmt = con.prepareStatement("INSERT INTO item_venda (id_produto, id_venda, quantidade, preco_produto, preco_total) VALUES (?, ?, ?, ?, ?, ?)");                        
             stmt.setInt(1, item.getProduto().getId());
             stmt.setInt(2, idVenda);
             stmt.setInt(3, item.getQuantidade());
@@ -114,7 +114,28 @@ public class VendaDAO {
         catch (SQLException ex) { ex.printStackTrace(); }
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return vendas;
-    } 
+    }
+    
+    // listar os vendas
+    public static List<Venda>  listar (){
+        Connection con = ConnectionFactory.getConnetion();
+        PreparedStatement stmt = null;
+        List<Venda> vendas = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM venda";
+            stmt = con.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vendas.add(parseResult(rs));
+            }
+        } catch (SQLException ex) {
+            System.out.print(ex);
+        } finally{
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+        return vendas;
+    }
 
     private static Venda parseResult(ResultSet rs) throws SQLException {
         Venda venda = new Venda();
@@ -155,4 +176,20 @@ public class VendaDAO {
         item.setPrecoTotal(rs.getDouble("preco_total"));
         return item;
     }
+    
+    public static void atualizar(Venda pedido) throws SQLException, Exception {
+        System.out.println("entrou na funlçao atualizar");
+        Connection con = ConnectionFactory.getConnetion();
+        PreparedStatement stmt = null;
+        try {
+            stmt = con.prepareStatement("UPDATE produto SET status=?");
+            stmt.setString(1, pedido.getStatus());
+            stmt.execute();
+        } catch (SQLException ex) {
+            System.out.print(ex);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+   
 }

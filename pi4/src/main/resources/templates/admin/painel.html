@@ -44,6 +44,9 @@
                         <a href="#/gerenciar-usuarios"><i class="fa fa-user fa-lg"></i> Gerenciar Usuários</a>
                     </li>
                     <li th:if="${session.admin.getPerfil().equals('gerente')}">
+                        <a href="#/gerenciar-pedidos"><i class="fa fa-money fa-lg"></i> Gerenciar Vendas</a>
+                    </li>
+                    <li th:if="${session.admin.getPerfil().equals('gerente')}">
                         <a href="#/relatorio"><i class="fa fa-file-text fa-lg"></i> Relatório</a>
                     </li>
                     <li>
@@ -84,6 +87,10 @@
             .when('/gerenciar-usuarios', {
                 templateUrl : '/admin/usuarios.html', //Tem que criar esse arquivo
                 controller  : 'usuariosController'
+            })
+            .when('/gerenciar-pedidos', {
+                templateUrl : '/admin/pedidos.html', 
+                controller  : 'pedidosController'
             })
             .when('/relatorio', {
                 templateUrl : '/admin/relatorio.html', //Tem que criar esse arquivo
@@ -249,7 +256,74 @@
                 });
             };
         });
+        
+        painelApp.controller('pedidosController', function($scope, $http) {
+            //Criar a lógica da tela de gerenciar pedidos
+            var pedidoLimpo = {
+                "id_venda": '', "id_cliente": '', "identificador": '', "id_endereco": '', "status": '', "data_venda": ''
+            };
+            $scope.pedido = JSON.parse(JSON.stringify(pedidoLimpo));
 
+            //Carrego a lista de pedidos
+            $http({
+                method: 'GET',
+                url: './api/pedidos'
+            }).then(function successCallback(response) {
+                var pedidos = response.data;
+                $scope.listaPedidos = pedidos;
+                
+            }, function errorCallback(response) {
+                alert('Erro ao solicitar o catalogo de pedidos.');
+            });
+
+
+            //Ao fechar o modal "limpo" o pedido do $scope
+            $("#modalForm").on("hidden.bs.modal", function () {
+                $scope.pedido = JSON.parse(JSON.stringify(pedidoLimpo));
+                $scope.$apply();
+            });
+
+            //Modal do "Editar"
+            $scope.editarPedido = function (pedido) {
+                $scope.pedido = pedido;
+                $('#modalForm').modal('show');
+            };
+            
+            //Função acionada quando clicar no submit de modal (cadastra ou atualiza)
+            $scope.salvarPedido = function() {
+                    atualizarPedido();
+                };     
+            
+        //Apresenta as mensagens de sucesso e erro
+            $scope.mostrarAlerta = function(sucesso, mensagem, tempo) {
+                if (sucesso) {
+                    $('.alert').removeClass('alert-danger').addClass('alert-success');
+                } else {
+                    $('.alert').removeClass('alert-success').addClass('alert-danger');
+                }
+                $('.alert').text(mensagem);
+                $('.alert').addClass('show');
+                setTimeout(()=> {
+                    $('.alert').removeClass('show')
+                }, tempo || 3000);
+            };
+            function atualizarPedido() {
+                $.ajax({
+                    type: "POST",
+                    url: '/admin/api/pedidos/'+$scope.pedido.id,
+                    data: JSON.stringify($scope.pedido),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.mostrarAlerta('sucesso', 'Produto atualizado com sucesso.');
+                        $('#modalForm').modal('hide');
+                    },
+                    error: (data)=> {
+                        alert('Erro ao atualizar o produto, tente novamente mais tarde.');
+                    }
+                });
+            }
+        });
+        
         painelApp.controller('usuariosController', function($scope, $http) {
             //Criar a lógica da tela de gerenciar usuários
         });

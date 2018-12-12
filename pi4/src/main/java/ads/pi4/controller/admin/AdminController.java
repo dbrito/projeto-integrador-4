@@ -2,8 +2,10 @@ package ads.pi4.controller.admin;
 
 import ads.pi4.DAO.ProdutoDAO;
 import ads.pi4.DAO.UsuarioDAO;
+import ads.pi4.DAO.VendaDAO;
 import ads.pi4.model.Produto;
 import ads.pi4.model.Usuario;
+import ads.pi4.model.Venda;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -138,4 +140,25 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao excluir o produto.<br>" + ex.getMessage());
         }
     }
+    
+    @GetMapping("/api/pedidos") //JSON com a lista de Produtos
+    @ResponseBody
+    public List<Venda> listarPedidos(HttpServletResponse response) {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        return VendaDAO.listar();
+    }
+    
+    @PostMapping("/api/pedidos/{id}") //editar pedido
+    public ResponseEntity<Object> editarPedido(@PathVariable("id") int id, @RequestBody Venda vnd) {
+        try {
+            System.out.println("entrou na funlçao atualizar admin");
+            VendaDAO.atualizar(vnd);
+            return ResponseEntity.status(HttpStatus.OK).body("Venda atualizada com sucesso.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar venda.<br>" + ex.getMessage());
+        }
+    }; 
+    
 }
