@@ -19,7 +19,7 @@ public class VendaDAO {
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;
         Venda nova = null;
-        
+
         venda.setEndereco(EnderecoDAO.inserir(venda.getEndereco()));
         try {
             stmt = con.prepareStatement(""
@@ -42,7 +42,7 @@ public class VendaDAO {
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return nova;
     }
-    
+
     private static void salvarItensVenda(Venda venda, int idVenda) throws SQLException, Exception {
         for (ItemVenda item : venda.getItens()) {
             Produto prd = ProdutoDAO.obter(item.getProduto().getId());
@@ -51,27 +51,27 @@ public class VendaDAO {
             atualizarEstoque(prd);
         }
     }
-    
+
     private static void salvarItemVenda(ItemVenda item, int idVenda) throws SQLException, Exception {
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;                        
+        PreparedStatement stmt = null;
         try {
-            stmt = con.prepareStatement("INSERT INTO item_venda (id_produto, id_venda, quantidade, preco_produto, preco_total) VALUES (?, ?, ?, ?, ?, ?)");                        
+            stmt = con.prepareStatement("INSERT INTO item_venda (id_produto, id_venda, quantidade, preco_produto, preco_total) VALUES (?, ?, ?, ?, ?, ?)");
             stmt.setInt(1, item.getProduto().getId());
             stmt.setInt(2, idVenda);
             stmt.setInt(3, item.getQuantidade());
             stmt.setDouble(4, item.getPrecoProduto());
-            stmt.setDouble(5, item.getPrecoTotal());            
+            stmt.setDouble(5, item.getPrecoTotal());
             stmt.execute();
         }
         catch (SQLException ex) { ex.printStackTrace(); }
         finally{ ConnectionFactory.closeConnection(con, stmt); }
     }
-    
-    public static void atualizarEstoque(Produto prd) throws SQLException, Exception {        
+
+    public static void atualizarEstoque(Produto prd) throws SQLException, Exception {
         Connection con = ConnectionFactory.getConnetion();
-        PreparedStatement stmt = null;                                        
-        
+        PreparedStatement stmt = null;
+
         try {
             stmt = con.prepareStatement("UPDATE produto SET quantidade=? WHERE (id=?)");
             stmt.setInt(1, prd.getQuantidade());
@@ -81,7 +81,7 @@ public class VendaDAO {
         catch (SQLException ex) { ex.printStackTrace(); }
         finally{ ConnectionFactory.closeConnection(con, stmt); }
     }
-    
+
     public static Venda obter (int id){
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;
@@ -89,15 +89,15 @@ public class VendaDAO {
 
         try {
             stmt = con.prepareStatement("SELECT * FROM  venda WHERE id_venda=?");
-            stmt.setInt(1, id);            
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) venda = parseResult(rs);
         }
         catch (SQLException ex) { ex.printStackTrace(); }
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return venda;
-    }        
-    
+    }
+
     public static List<Venda> listarPorCliente (int idCliente){
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;
@@ -105,17 +105,17 @@ public class VendaDAO {
 
         try {
             stmt = con.prepareStatement("SELECT * FROM  venda WHERE id_cliente=?");
-            stmt.setInt(1, idCliente);            
+            stmt.setInt(1, idCliente);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 vendas.add(parseResult(rs));
-            } 
+            }
         }
         catch (SQLException ex) { ex.printStackTrace(); }
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return vendas;
     }
-    
+
     // listar os vendas
     public static List<Venda>  listar (){
         Connection con = ConnectionFactory.getConnetion();
@@ -144,11 +144,11 @@ public class VendaDAO {
         venda.setIdentificador(rs.getString("identificador"));
         venda.setStatus(rs.getString("status"));
         venda.setEndereco(EnderecoDAO.obter(rs.getInt("id_endereco")));
-        venda.setData(rs.getDate("data_venda")); 
+        venda.setData(rs.getDate("data_venda"));
         venda.setItens(obterItensVenda(venda));
         return venda;
     }
-    
+
     private static List<ItemVenda> obterItensVenda(Venda venda) {
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;
@@ -156,7 +156,7 @@ public class VendaDAO {
 
         try {
             stmt = con.prepareStatement("SELECT * FROM  item_venda WHERE id_venda=?");
-            stmt.setInt(1, venda.getId());            
+            stmt.setInt(1, venda.getId());
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) {
                 itens.add(parseResultItem(rs));
@@ -167,7 +167,7 @@ public class VendaDAO {
         finally{ ConnectionFactory.closeConnection(con, stmt); }
         return itens;
     }
-    
+
     private static ItemVenda parseResultItem(ResultSet rs) throws SQLException {
         ItemVenda item = new ItemVenda();
         item.setProduto(ProdutoDAO.obter(rs.getInt("id_produto")));
@@ -176,20 +176,18 @@ public class VendaDAO {
         item.setPrecoTotal(rs.getDouble("preco_total"));
         return item;
     }
-    
+
     public static void atualizar(Venda pedido) throws SQLException, Exception {
-        System.out.println("entrou na funlçao atualizar");
         Connection con = ConnectionFactory.getConnetion();
         PreparedStatement stmt = null;
         try {
-            stmt = con.prepareStatement("UPDATE produto SET status=?");
+            stmt = con.prepareStatement("UPDATE venda SET status=? where id_venda=?");
             stmt.setString(1, pedido.getStatus());
+            stmt.setInt(2, pedido.getId());
             stmt.execute();
-        } catch (SQLException ex) {
-            System.out.print(ex);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
         }
+        catch (SQLException ex) { ex.printStackTrace(); }
+        finally{ ConnectionFactory.closeConnection(con, stmt); }
     }
-   
+
 }

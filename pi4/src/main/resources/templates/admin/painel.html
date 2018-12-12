@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" ng-app="painelApp">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Arquivos Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -15,7 +16,7 @@
 
     <!-- Arquivo do FontAwesome -->
     <!-- Arquivos de Fonte (Icones, Titulos etc) -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" >
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link rel="icon" th:href="@{/img/favicon.png}">
 
@@ -23,9 +24,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
 
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/css/painel.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/admin/css/painel.css}" />
     <title>Perfumaria: Painel Administrativo</title>
 </head>
+
 <body>
     <div id="main">
         <div class="nav-side-menu">
@@ -44,7 +46,7 @@
                         <a href="#/gerenciar-usuarios"><i class="fa fa-user fa-lg"></i> Gerenciar Usuários</a>
                     </li>
                     <li th:if="${session.admin.getPerfil().equals('gerente')}">
-                        <a href="#/gerenciar-pedidos"><i class="fa fa-money fa-lg"></i> Gerenciar Vendas</a>
+                        <a href="#/gerenciar-pedidos"><i class="fa fa-money fa-lg"></i>&nbsp; Gerenciar Pedidos</a>
                     </li>
                     <li th:if="${session.admin.getPerfil().equals('gerente')}">
                         <a href="#/relatorio"><i class="fa fa-file-text fa-lg"></i> Relatório</a>
@@ -74,39 +76,39 @@
         }
 
         // configure our routes
-        painelApp.config(function($routeProvider) {
+        painelApp.config(function ($routeProvider) {
             $routeProvider
-            .when('/', {
-                templateUrl : '/admin/home.html',
-                controller  : 'mainController'
-            })
-            .when('/gerenciar-produtos', {
-                templateUrl : '/admin/produtos.html',
-                controller  : 'produtosController'
-            })
-            .when('/gerenciar-usuarios', {
-                templateUrl : '/admin/usuarios.html', //Tem que criar esse arquivo
-                controller  : 'usuariosController'
-            })
-            .when('/gerenciar-pedidos', {
-                templateUrl : '/admin/pedidos.html', 
-                controller  : 'pedidosController'
-            })
-            .when('/relatorio', {
-                templateUrl : '/admin/relatorio.html', //Tem que criar esse arquivo
-                controller  : 'relatorioController'
-            })
-            .when('/editar-conta', {
-                templateUrl : '/admin/conta.html', //Tem que criar esse arquivo
-                controller  : 'contaController'
-            });
+                .when('/', {
+                    templateUrl: '/admin/home.html',
+                    controller: 'mainController'
+                })
+                .when('/gerenciar-produtos', {
+                    templateUrl: '/admin/produtos.html',
+                    controller: 'produtosController'
+                })
+                .when('/gerenciar-usuarios', {
+                    templateUrl: '/admin/usuarios.html', //Tem que criar esse arquivo
+                    controller: 'usuariosController'
+                })
+                .when('/gerenciar-pedidos', {
+                    templateUrl: '/admin/pedidos.html',
+                    controller: 'pedidosController'
+                })
+                .when('/relatorio', {
+                    templateUrl: '/admin/relatorio.html', //Tem que criar esse arquivo
+                    controller: 'relatorioController'
+                })
+                .when('/editar-conta', {
+                    templateUrl: '/admin/conta.html', //Tem que criar esse arquivo
+                    controller: 'contaController'
+                });
         });
 
-        painelApp.controller('mainController', function($scope) {
+        painelApp.controller('mainController', function ($scope) {
             $scope.message = 'Everyone come and see how good I look!';
         });
 
-        painelApp.controller('produtosController', function($scope, $http) {
+        painelApp.controller('produtosController', function ($scope, $http) {
             $scope.arquivoImagem = null;
             var produtoLimpo = {
                 "id": '', "codigo": '', "nome": '', "marca": '', "preco": '', "imagem": '',
@@ -131,10 +133,10 @@
             });
 
             //Função que fica atualizando a imagem no modal ao mudar o input de arquivo
-            $scope.trocarImagem = function(input) {
+            $scope.trocarImagem = function (input) {
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         $scope.produto.imagem = e.target.result;
                         $scope.$apply();
                     }
@@ -156,7 +158,7 @@
             }
 
             //Apresenta as mensagens de sucesso e erro
-            $scope.mostrarAlerta = function(sucesso, mensagem, tempo) {
+            $scope.mostrarAlerta = function (sucesso, mensagem, tempo) {
                 if (sucesso) {
                     $('.alert').removeClass('alert-danger').addClass('alert-success');
                 } else {
@@ -164,13 +166,13 @@
                 }
                 $('.alert').text(mensagem);
                 $('.alert').addClass('show');
-                setTimeout(()=> {
+                setTimeout(() => {
                     $('.alert').removeClass('show')
                 }, tempo || 3000);
             }
 
             //Função acionada quando clicar no submit de modal (cadastra ou atualiza)
-            $scope.salvar = function() {
+            $scope.salvar = function () {
                 //TO-DO: Validar os campos
                 $scope.produto.precoOriginal = realToNumber($scope.produto.precoOriginal);
                 $scope.produto.precoVenda = realToNumber($scope.produto.precoVenda);
@@ -189,8 +191,8 @@
                     method: "POST",
                     contentType: false,
                     processData: false,
-                    data:fd,
-                    success: function(data){
+                    data: fd,
+                    success: function (data) {
                         $scope.produto.imagem = data;
                         if (!$scope.produto.id) cadastrarProduto();
                         else atualizarProduto();
@@ -207,7 +209,7 @@
                     url: '/admin/api/produtos',
                     data: JSON.stringify($scope.produto),
                     contentType: 'application/json',
-                    success: (data)=> {
+                    success: (data) => {
                         $scope.produto.id = data;
                         var novoProduto = JSON.parse(JSON.stringify($scope.produto));
                         novoProduto.precoOriginal = numberToReal(novoProduto.precoOriginal);
@@ -217,7 +219,7 @@
                         $('#modalForm').modal('hide');
                         $scope.mostrarAlerta('sucesso', 'Produto cadastrado com sucesso.')
                     },
-                    error: (data)=> {
+                    error: (data) => {
                         alert('Erro ao cadastrar o produto, tente novamente mais tarde.');
                     }
                 });
@@ -226,24 +228,24 @@
             function atualizarProduto() {
                 $.ajax({
                     type: "POST",
-                    url: '/admin/api/produtos/'+$scope.produto.id,
+                    url: '/admin/api/produtos/' + $scope.produto.id,
                     data: JSON.stringify($scope.produto),
                     contentType: 'application/json',
-                    success: (data)=> {
+                    success: (data) => {
                         $scope.produto.precoOriginal = numberToReal($scope.produto.precoOriginal);
                         $scope.produto.precoVenda = numberToReal($scope.produto.precoVenda);
                         $scope.mostrarAlerta('sucesso', 'Produto atualizado com sucesso.')
                         $('#modalForm').modal('hide');
                     },
-                    error: (data)=> {
+                    error: (data) => {
                         alert('Erro ao atualizar o produto, tente novamente mais tarde.');
                     }
                 });
             }
 
             //Função que "exclui" um produto
-            $scope.removerProduto = function(produto) {
-                if (!confirm('Deseja excluir o produto "'+ produto.nome +'" ?')) return;
+            $scope.removerProduto = function (produto) {
+                if (!confirm('Deseja excluir o produto "' + produto.nome + '" ?')) return;
                 var indice = $scope.listaProdutos.indexOf(produto);
                 $http({
                     method: 'DELETE',
@@ -256,8 +258,8 @@
                 });
             };
         });
-        
-        painelApp.controller('pedidosController', function($scope, $http) {
+
+        painelApp.controller('pedidosController', function ($scope, $http) {
             //Criar a lógica da tela de gerenciar pedidos
             var pedidoLimpo = {
                 "id_venda": '', "id_cliente": '', "identificador": '', "id_endereco": '', "status": '', "data_venda": ''
@@ -271,11 +273,9 @@
             }).then(function successCallback(response) {
                 var pedidos = response.data;
                 $scope.listaPedidos = pedidos;
-                
             }, function errorCallback(response) {
                 alert('Erro ao solicitar o catalogo de pedidos.');
             });
-
 
             //Ao fechar o modal "limpo" o pedido do $scope
             $("#modalForm").on("hidden.bs.modal", function () {
@@ -288,14 +288,31 @@
                 $scope.pedido = pedido;
                 $('#modalForm').modal('show');
             };
-            
+
             //Função acionada quando clicar no submit de modal (cadastra ou atualiza)
-            $scope.salvarPedido = function() {
-                    atualizarPedido();
-                };     
-            
-        //Apresenta as mensagens de sucesso e erro
-            $scope.mostrarAlerta = function(sucesso, mensagem, tempo) {
+            $scope.salvarPedido = function () {
+                atualizarPedido();
+            };
+
+            function atualizarPedido() {
+                console.log($scope.pedido);
+                $.ajax({
+                    type: "POST",
+                    url: '/admin/api/pedidos/' + $scope.pedido.id,
+                    data: JSON.stringify($scope.pedido),
+                    contentType: 'application/json',
+                    success: (data) => {
+                        $scope.mostrarAlerta('sucesso', 'Produto atualizado com sucesso.');
+                        $('#modalForm').modal('hide');
+                    },
+                    error: (data) => {
+                        alert('Erro ao atualizar o produto, tente novamente mais tarde.');
+                    }
+                });
+            }
+
+            //Apresenta as mensagens de sucesso e erro
+            $scope.mostrarAlerta = function (sucesso, mensagem, tempo) {
                 if (sucesso) {
                     $('.alert').removeClass('alert-danger').addClass('alert-success');
                 } else {
@@ -303,28 +320,13 @@
                 }
                 $('.alert').text(mensagem);
                 $('.alert').addClass('show');
-                setTimeout(()=> {
+                setTimeout(() => {
                     $('.alert').removeClass('show')
                 }, tempo || 3000);
             };
-            function atualizarPedido() {
-                $.ajax({
-                    type: "POST",
-                    url: '/admin/api/pedidos/'+$scope.pedido.id,
-                    data: JSON.stringify($scope.pedido),
-                    contentType: 'application/json',
-                    success: (data)=> {
-                        $scope.mostrarAlerta('sucesso', 'Produto atualizado com sucesso.');
-                        $('#modalForm').modal('hide');
-                    },
-                    error: (data)=> {
-                        alert('Erro ao atualizar o produto, tente novamente mais tarde.');
-                    }
-                });
-            }
         });
-        
-        painelApp.controller('usuariosController', function($scope, $http) {
+
+        painelApp.controller('usuariosController', function ($scope, $http) {
             var usuarioLimpo = {
                 "id": '', "enabled": '', "user": '', "pass": '', "nome": '',
                 "cpf": '', "perfil": ''
@@ -359,7 +361,7 @@
             }
 
             //Apresenta as mensagens de sucesso e erro
-            $scope.mostrarAlerta = function(sucesso, mensagem, tempo) {
+            $scope.mostrarAlerta = function (sucesso, mensagem, tempo) {
                 if (sucesso) {
                     $('.alert').removeClass('alert-danger').addClass('alert-success');
                 } else {
@@ -367,28 +369,28 @@
                 }
                 $('.alert').text(mensagem);
                 $('.alert').addClass('show');
-                setTimeout(()=> {
+                setTimeout(() => {
                     $('.alert').removeClass('show')
                 }, tempo || 3000);
             }
 
             //Função acionada quando clicar no submit de modal (cadastra ou atualiza)
-            $scope.salvar = function() {
+            $scope.salvar = function () {
                 //TO-DO: Validar os campos
-                
-                    if (!$scope.usuario.id) cadastrarUsuario();
-                    else atualizarUsuario();
-             
+
+                if (!$scope.usuario.id) cadastrarUsuario();
+                else atualizarUsuario();
+
             }
 
-            
+
             function cadastrarUsuario() {
                 $.ajax({
                     type: "POST",
                     url: '/admin/api/usuarios',
                     data: JSON.stringify($scope.usuario),
                     contentType: 'application/json',
-                    success: (data)=> {
+                    success: (data) => {
                         $scope.usuario.id = data;
                         var novoUsuario = JSON.parse(JSON.stringify($scope.usuario));
                         $scope.listaUsuarios.push(novoUsuario);
@@ -396,51 +398,52 @@
                         $('#modalForm').modal('hide');
                         $scope.mostrarAlerta('sucesso', 'Usuário cadastrado com sucesso.')
                     },
-                    error: (data)=> {
+                    error: (data) => {
                         alert('Erro ao cadastrar o usuário, tente novamente mais tarde.');
                     }
                 });
             }
 
-               function atualizarUsuario() {
+            function atualizarUsuario() {
                 $.ajax({
                     type: "POST",
-                    url: '/admin/api/usuarios/'+$scope.usuario.id,
+                    url: '/admin/api/usuarios/' + $scope.usuario.id,
                     data: JSON.stringify($scope.usuario),
                     contentType: 'application/json',
-                    success: (data)=> {
+                    success: (data) => {
                         $scope.mostrarAlerta('sucesso', 'Usuário atualizado com sucesso.')
                         $('#modalForm').modal('hide');
                     },
-                    error: (data)=> {
+                    error: (data) => {
                         alert('Erro ao atualizar o usuário, tente novamente mais tarde.');
                     }
                 });
             }
 
             //Função que "exclui" um produto
-            $scope.removerUsuario = function(usuario) {
-                if (!confirm('Deseja excluir o usuário "'+ usuario.nome +'" ?')) return;
+            $scope.removerUsuario = function (usuario) {
+                if (!confirm('Deseja excluir o usuário "' + usuario.nome + '" ?')) return;
                 var indice = $scope.listaUsuarios.indexOf(usuario);
                 $http({
                     method: 'DELETE',
                     url: './api/usuarios/' + usuario.id
                 }).then(function successCallback(response) {
                     $scope.listaUsuarios.splice(indice, 1);
-                    $scope.mostrarAlerta(true, 'Usuários excluido com sucesso.');
+                    $scope.mostrarAlerta(true, 'Usuário excluído com sucesso.');
                 }, function errorCallback(response) {
                     $scope.mostrarAlerta(false, 'Erro ao excluir o usuário, tente novamente mais tarde.');
                 });
             };
         });
 
-        painelApp.controller('relatorioController', function($scope, $http) {
+        painelApp.controller('relatorioController', function ($scope, $http) {
             //Criar a lógica da tela de relatórios
         });
 
-        painelApp.controller('contaController', function($scope, $http) {
+        painelApp.controller('contaController', function ($scope, $http) {
             //Criar a lógica da editar conta
         });
     </script>
 </body>
+
 </html>

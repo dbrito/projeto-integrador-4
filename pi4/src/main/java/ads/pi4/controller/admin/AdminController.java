@@ -38,7 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @GetMapping({"/"}) //Tela de Login
+    @GetMapping("/") //Tela de Login
     public String login(HttpServletRequest req) {
         System.out.println("/");
         HttpSession sessao = req.getSession(true);
@@ -111,8 +111,6 @@ public class AdminController {
         }
     }
 
-    ;
-
     @PostMapping("/api/produtos/{id}") //Cadastro de produto
     public ResponseEntity<Object> editar(@PathVariable("id") int id, @RequestBody Produto pd) {
         try {
@@ -123,8 +121,6 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
         }
     }
-
-    ;
 
     @GetMapping("/api/produtos") //JSON com a lista de Produtos
     @ResponseBody
@@ -145,6 +141,17 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/api/usuarios") //JSON com a lista de Usuários
+    @ResponseBody
+    public List<Usuario> listarUsuarios(HttpServletResponse response) {
+        try {
+            return UsuarioDAO.listar();
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
     @PostMapping("/api/usuarios") //Cadastro de usuário
     public ResponseEntity<Object> cadastar(@RequestBody Usuario us) {
         try {
@@ -156,8 +163,6 @@ public class AdminController {
         }
     }
 
-    ;
-
     @PostMapping("/api/usuarios/{id}") //Cadastro de usuário
     public ResponseEntity<Object> editar(@PathVariable("id") int id, @RequestBody Usuario us) {
         try {
@@ -166,21 +171,6 @@ public class AdminController {
         } catch (Exception ex) {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o usuário.<br>" + ex.getMessage());
-        }
-    }
-
-    ;
-
-    @GetMapping("/api/usuario") //JSON com a lista de Usuários
-    @ResponseBody
-    public List<Usuario> listarUsuarios(HttpServletResponse response) {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        try {
-            return UsuarioDAO.listar();
-        } catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
         }
     }
 
@@ -206,7 +196,6 @@ public class AdminController {
     @PostMapping("/api/pedidos/{id}") //editar pedido
     public ResponseEntity<Object> editarPedido(@PathVariable("id") int id, @RequestBody Venda vnd) {
         try {
-            System.out.println("entrou na funlÃ§ao atualizar admin");
             VendaDAO.atualizar(vnd);
             return ResponseEntity.status(HttpStatus.OK).body("Venda atualizada com sucesso.");
         } catch (Exception ex) {
@@ -214,6 +203,4 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar venda.<br>" + ex.getMessage());
         }
     }
-;
-
 }

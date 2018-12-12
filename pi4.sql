@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `endereco` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.endereco: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.endereco: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `endereco` DISABLE KEYS */;
 INSERT INTO `endereco` (`id`, `cep`, `endereco`, `numero`, `complemento`, `bairro`, `cidade`, `estado`) VALUES
 	(23, '05777-001', 'Estrada do Campo Limpo', 145, 'Bloco Joy, Ap 131', 'Vila Prel', 'São Paulo', 'SP'),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `item_venda` (
   PRIMARY KEY (`id_item_venda`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.item_venda: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.item_venda: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `item_venda` DISABLE KEYS */;
 INSERT INTO `item_venda` (`id_item_venda`, `id_produto`, `quantidade`, `id_venda`, `preco_total`, `preco_produto`) VALUES
 	(19, 67, 2, 19, 198, 99),
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `produto` (
   UNIQUE KEY `id_produto_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.produto: ~15 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.produto: ~7 rows (aproximadamente)
 /*!40000 ALTER TABLE `produto` DISABLE KEYS */;
 INSERT INTO `produto` (`id`, `nome`, `marca`, `imagem`, `preco_original`, `preco_venda`, `quantidade`, `categoria`, `descricao`, `ativo`) VALUES
 	(63, 'The Secret Temptation Masculino Eau de Toilette', 'Antonio Banderas', '1544323014010.jpg', 149, 149, 100, 'Perfume', 'Antonio Banderas seduz mesmo sem querer, seu sucesso é algo que simplesmente acontece. E é justamente a pouca importância que atribui ao seu dom que o torna ainda mais desejável. Esse é o segredo do seu sucesso. Uma fragrância sensual, refinada e extremamente sedutora. Um segredo revelado para homens modernos que não se importam com as regras pré-estabelecidas da sedução, para quem o natural se conjuga com o essencial.', b'1'),
@@ -103,7 +103,7 @@ INSERT INTO `produto` (`id`, `nome`, `marca`, `imagem`, `preco_original`, `preco
 	(67, 'Her Secret Temptation feminino Eau de Toilette', 'Antonio Banderas', '1540783448022.jpg', 99, 99, 87, 'Perfume', 'Uma combinação de frutas e cítricos intensificados por condimentos brilhantes. No coração da fragrância, a íris e a rosa acrescentam um toque colorido a um ramalhete de elegantes flores brancas. Na nota de fundo, a calidez do âmbar se funde em um acorde oriental, trazendo uma irresistível identidade e personalidade com as madeiras exóticas.', b'1'),
 	(68, 'Mr Burberry masculino Eau de Toilette', 'Burberry', '1540783778534.jpg', 150, 150, 100, 'Perfume', 'A nova fragrância para homens por Burberry capta a essência de Londres e seus momentos, fundindo aromas clássicos da perfumaria britânica com ingredientes inesperados. Notas de cabeça frescas, trabalhada de grapefruit e cardamomo, cortados com uma base sedutora de vetiver terra e sândalo.', b'1'),
 	(69, 'Perfume Antonio Banderas King of Seduction masculino', 'Antonio Banderas 6', '1540784240198.jpg', 94, 94, 200, 'Perfume', 'Uma combinação elegante e harmônica de frescor cítrico e força masculina, que abre a porta ao momento definitivo da sedução.\\nUm furacão de elementos livres compõe uma essência de poderosos contrastes. Intensa, marcante e, ao mesmo tempo, fresca e elegante. Uma dança sensual entre força e delicadeza que transportará você ao reino da sedução.', b'1'),
-	(111, 'Batom M.A.C Matte Lipstick', 'M.A.C', '1544322947323.jpg', 83, 24.9, 100, 'Sabonete', 'Um batom com centenas de nuances. Icônico produto que fez a fama da M·A·C. \nFormulado para colorir, definir e destacar os lábios. Centenas de nuances, texturas supermodernas.', b'1');
+	(111, 'Batom M.A.C Matte Lipstick', 'M.A.C', '1544322947323.jpg', 83, 50, 100, 'Sabonete', 'Um batom com centenas de nuances. Icônico produto que fez a fama da M·A·C. \nFormulado para colorir, definir e destacar os lábios. Centenas de nuances, texturas supermodernas.', b'1');
 /*!40000 ALTER TABLE `produto` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela projeto_integrador.usuario
@@ -116,13 +116,15 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `ativo` bit(1) NOT NULL,
   `perfil` varchar(255) DEFAULT 'caixa',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.usuario: ~2 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.usuario: ~3 rows (aproximadamente)
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
 INSERT INTO `usuario` (`id`, `nome`, `cpf`, `user`, `pass`, `ativo`, `perfil`) VALUES
 	(73, 'Silvio Santos', '666', 'admin', 'admin', b'1', 'gerente'),
-	(75, 'Luke Valentine', '4523145', 'caixa', 'caixa', b'1', 'caixa');
+	(75, 'Luke Valentine', '4523145', 'caixa', 'caixa', b'1', 'estoquista'),
+	(76, 'teste2', '01752904583', 'teste', 'teste', b'1', 'estoquista'),
+	(77, 'teste', '0175290', 'qwe', 'qwe', b'0', 'gerente');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela projeto_integrador.venda
@@ -139,12 +141,12 @@ CREATE TABLE IF NOT EXISTS `venda` (
   CONSTRAINT `fk_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela projeto_integrador.venda: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela projeto_integrador.venda: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `venda` DISABLE KEYS */;
 INSERT INTO `venda` (`id_venda`, `id_cliente`, `identificador`, `id_endereco`, `status`, `data_venda`) VALUES
-	(19, 29, 'P1541388955196', 49, 'Pagamento Pendente', '2018-11-05'),
-	(20, 29, 'P1541391082331', 50, 'Pagamento Pendente', '2018-11-05'),
-	(21, 29, 'P1544139425539', 51, 'Pagamento Pendente', '2018-12-06');
+	(19, 29, 'P1541388955196', 49, 'produto_enviado', '2018-11-05'),
+	(20, 29, 'P1541391082331', 50, 'produto_enviado', '2018-11-05'),
+	(21, 29, 'P1544139425539', 51, 'produto_entregue', '2018-12-06');
 /*!40000 ALTER TABLE `venda` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
