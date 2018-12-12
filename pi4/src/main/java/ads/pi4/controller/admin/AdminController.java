@@ -109,7 +109,9 @@ public class AdminController {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
         }
-    };
+    }
+
+    ;
 
     @PostMapping("/api/produtos/{id}") //Cadastro de produto
     public ResponseEntity<Object> editar(@PathVariable("id") int id, @RequestBody Produto pd) {
@@ -120,7 +122,9 @@ public class AdminController {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o produto.<br>" + ex.getMessage());
         }
-    };
+    }
+
+    ;
 
     @GetMapping("/api/produtos") //JSON com a lista de Produtos
     @ResponseBody
@@ -140,7 +144,57 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao excluir o produto.<br>" + ex.getMessage());
         }
     }
-    
+
+    @PostMapping("/api/usuarios") //Cadastro de usuário
+    public ResponseEntity<Object> cadastar(@RequestBody Usuario us) {
+        try {
+            int idUsuario = UsuarioDAO.inserir(us);
+            return ResponseEntity.status(HttpStatus.OK).body(idUsuario);
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o usuário.<br>" + ex.getMessage());
+        }
+    }
+
+    ;
+
+    @PostMapping("/api/usuarios/{id}") //Cadastro de usuário
+    public ResponseEntity<Object> editar(@PathVariable("id") int id, @RequestBody Usuario us) {
+        try {
+            UsuarioDAO.atualizar(us);
+            return ResponseEntity.status(HttpStatus.OK).body("usuário atualizado com sucesso.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar o usuário.<br>" + ex.getMessage());
+        }
+    }
+
+    ;
+
+    @GetMapping("/api/usuario") //JSON com a lista de Usuários
+    @ResponseBody
+    public List<Usuario> listarUsuarios(HttpServletResponse response) {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            return UsuarioDAO.listar();
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    @DeleteMapping("/api/usuarios/{id}") //Exclui um usuário especifico
+    public ResponseEntity<Object> excluirUsuario(@PathVariable("id") int id, HttpServletResponse response) {
+        try {
+            UsuarioDAO.excluir(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Usuário excluido com sucesso.");
+        } catch (Exception ex) {
+            System.out.print(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao excluir o usuário.<br>" + ex.getMessage());
+        }
+    }
+
     @GetMapping("/api/pedidos") //JSON com a lista de Produtos
     @ResponseBody
     public List<Venda> listarPedidos(HttpServletResponse response) {
@@ -148,17 +202,18 @@ public class AdminController {
         response.setCharacterEncoding("UTF-8");
         return VendaDAO.listar();
     }
-    
+
     @PostMapping("/api/pedidos/{id}") //editar pedido
     public ResponseEntity<Object> editarPedido(@PathVariable("id") int id, @RequestBody Venda vnd) {
         try {
-            System.out.println("entrou na funlçao atualizar admin");
+            System.out.println("entrou na funlÃ§ao atualizar admin");
             VendaDAO.atualizar(vnd);
             return ResponseEntity.status(HttpStatus.OK).body("Venda atualizada com sucesso.");
         } catch (Exception ex) {
             System.out.print(ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar venda.<br>" + ex.getMessage());
         }
-    }; 
-    
+    }
+;
+
 }

@@ -1,1 +1,90 @@
-tela de usuários
+<h1><i class="fa fa-edit fa-lg"></i> Gerenciar Usuários</h1>
+
+<!-- Lista de Usuários -->
+<table class="table table-hover">
+    <div class="alert fade" role="alert"></div>
+    <thead>
+        <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">CPF</th>
+            <th scope="col">User</th>
+            <th scope="col">Perfil</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="usr in listaUsuarios">
+            <td>{{usr.nome}}</td>
+            <td>{{usr.cpf}}</td>
+            <td>{{usr.user}}</td>
+            <td>{{usr.perfil}}</td>
+            <td>{{usr.enabled}}</td>
+            <td>
+                <a ng-click="editarUsuario(usr)" onclick="return false" href="#" title="Editar">
+                    <i class="fa fa-edit fa-lg"></i>
+                </a>
+                <a ng-click="removerUsuario(usr)" class="remove-item" href="#" onclick="return false" title="Excluir">
+                    <i class="fa fa-trash fa-lg"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm">
+    Cadastrar Usuário
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Usuário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/usuarios" method="post" id="formulario">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nome">Nome:</label>
+                                <input ng-model="usuario.nome" type="text" class="form-control" name="nome" id="nome" required>
+                            </div>
+                             <div class="form-group">
+                                <label for="cpf">CPF:</label>
+                                <input ng-model="usuario.cpf" type="text" class="form-control" name="cpf" id="cpf" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="user">User:</label>
+                            <input ng-model="usuario.user" type="text" class="form-control" name="user" id="user" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="pass">Password:</label>
+                            <input ng-model="usuario.pass" type="password" class="form-control" name="pass" id="pass" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label for="status">Status:</label>
+                            <input ng-model="usuario.enabled" type="text" class="form-control" name="status" id="status" required>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="perfil">Perfil:</label>
+                            <input ng-model="usuario.perfil" type="text" class="form-control" name="perfil" id="perfil" required>
+                        </div>
+                    </div>    
+                    <!-- <a href="#" class="btn btn-info" role="button">Cancelar</a> -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="salvar()">{{(usuario.id) ? 'Atualizar' : 'Cadastrar' }}</button>
+            </div>
+        </div>
+    </div>
+</div>

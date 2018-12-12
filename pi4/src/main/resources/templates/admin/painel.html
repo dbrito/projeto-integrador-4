@@ -325,7 +325,113 @@
         });
         
         painelApp.controller('usuariosController', function($scope, $http) {
-            //Criar a lógica da tela de gerenciar usuários
+            var usuarioLimpo = {
+                "id": '', "enabled": '', "user": '', "pass": '', "nome": '',
+                "cpf": '', "perfil": ''
+            };
+            $scope.usuario = JSON.parse(JSON.stringify(usuarioLimpo));
+
+            //Carrego a lista de usuários
+            $http({
+                method: 'GET',
+                url: './api/usuarios'
+            }).then(function successCallback(response) {
+                var usuarios = response.data;
+                usuarios.forEach(function (item) {
+                })
+                $scope.listaUsuarios = usuarios;
+
+            }, function errorCallback(response) {
+                alert('Erro ao solicitar a lista de usuários.');
+            });
+
+            //Ao fechar o modal "limpo" o produto do $scope
+            $("#modalForm").on("hidden.bs.modal", function () {
+                $scope.usuario = JSON.parse(JSON.stringify(usuarioLimpo));
+                $scope.$apply();
+                $('#imagem').val('');
+            });
+
+            //Modal do "Editar"
+            $scope.editarUsuario = function (usuario) {
+                $scope.usuario = usuario;
+                $('#modalForm').modal('show');
+            }
+
+            //Apresenta as mensagens de sucesso e erro
+            $scope.mostrarAlerta = function(sucesso, mensagem, tempo) {
+                if (sucesso) {
+                    $('.alert').removeClass('alert-danger').addClass('alert-success');
+                } else {
+                    $('.alert').removeClass('alert-success').addClass('alert-danger');
+                }
+                $('.alert').text(mensagem);
+                $('.alert').addClass('show');
+                setTimeout(()=> {
+                    $('.alert').removeClass('show')
+                }, tempo || 3000);
+            }
+
+            //Função acionada quando clicar no submit de modal (cadastra ou atualiza)
+            $scope.salvar = function() {
+                //TO-DO: Validar os campos
+                
+                    if (!$scope.usuario.id) cadastrarUsuario();
+                    else atualizarUsuario();
+             
+            }
+
+            
+            function cadastrarUsuario() {
+                $.ajax({
+                    type: "POST",
+                    url: '/admin/api/usuarios',
+                    data: JSON.stringify($scope.usuario),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.usuario.id = data;
+                        var novoUsuario = JSON.parse(JSON.stringify($scope.usuario));
+                        $scope.listaUsuarios.push(novoUsuario);
+                        $scope.$apply();
+                        $('#modalForm').modal('hide');
+                        $scope.mostrarAlerta('sucesso', 'Usuário cadastrado com sucesso.')
+                    },
+                    error: (data)=> {
+                        alert('Erro ao cadastrar o usuário, tente novamente mais tarde.');
+                    }
+                });
+            }
+
+               function atualizarUsuario() {
+                $.ajax({
+                    type: "POST",
+                    url: '/admin/api/usuarios/'+$scope.usuario.id,
+                    data: JSON.stringify($scope.usuario),
+                    contentType: 'application/json',
+                    success: (data)=> {
+                        $scope.mostrarAlerta('sucesso', 'Usuário atualizado com sucesso.')
+                        $('#modalForm').modal('hide');
+                    },
+                    error: (data)=> {
+                        alert('Erro ao atualizar o usuário, tente novamente mais tarde.');
+                    }
+                });
+            }
+
+            //Função que "exclui" um produto
+            $scope.removerUsuario = function(usuario) {
+                if (!confirm('Deseja excluir o usuário "'+ usuario.nome +'" ?')) return;
+                var indice = $scope.listaUsuarios.indexOf(usuario);
+                $http({
+                    method: 'DELETE',
+                    url: './api/usuarios/' + usuario.id
+                }).then(function successCallback(response) {
+                    $scope.listaUsuarios.splice(indice, 1);
+                    $scope.mostrarAlerta(true, 'Usuários excluido com sucesso.');
+                }, function errorCallback(response) {
+                    $scope.mostrarAlerta(false, 'Erro ao excluir o usuário, tente novamente mais tarde.');
+                });
+            };
         });
 
         painelApp.controller('relatorioController', function($scope, $http) {
