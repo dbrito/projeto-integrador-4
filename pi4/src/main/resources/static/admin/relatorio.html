@@ -1,1 +1,51 @@
-tela de relatório
+<h1><i class="fa fa-edit fa-lg"></i> Relatorio de Vendas</h1>
+<div class="content">
+       <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="data_inicio">Data Inicio</label>
+                    <input  ng-model="filtros.dtini" type="text" class="form-control" name="data_inicio" id="data_inicio" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="data_inicio">Data Fim</label>
+                    <input ng-model="filtros.dtfim" type="text" class="form-control" name="data_fim" id="data_fim" required>
+                </div>
+       </div>
+    
+<button type="button" class="btn btn-primary" ng-click="carregar()">
+    Carregar
+</button>
+<!-- Lista de Produtos -->
+<div class="row">
+ <div class="form-group col-md-12">
+<table class="table table-hover">
+    <div class="alert fade" role="alert"></div>
+    <thead>
+        <tr>
+            <th scope="col">Cliente</th>
+            <th scope="col">Status</th>
+            <th scope="col">Data Venda</th>
+            <th scope="col">Total Vendas</th>
+            <th scope="col">Total Produtos</th>
+            <th scope="col">Total Preço</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="rel in listaRelatorios">
+            <td>{{rel.nome}}</td>
+            <td>{{rel.status}}</td>
+            <td>{{rel.datavenda}}</td>
+            <td>{{rel.vendas}}</td>
+            <td>{{rel.quantidade}}</td>
+            <td>R$ {{rel.precovenda}}</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+
+<script>
+     $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+     $( "#data_inicio" ).datepicker();
+     $( "#data_fim" ).datepicker();
+</script>
