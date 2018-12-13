@@ -436,7 +436,7 @@
             };
         });
 
-        painelApp.controller('relatorioController', function ($scope, $http) {
+        painelApp.controller('relatorioController', function ($scope, $http, $filter) {
                                    // filtros iniciais
                     var newdate = new Date();
                     var primeiroDiaMes = new Date(newdate.getFullYear(), newdate.getMonth(), 1);
