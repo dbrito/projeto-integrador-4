@@ -437,7 +437,36 @@
         });
 
         painelApp.controller('relatorioController', function ($scope, $http) {
-            //Criar a lógica da tela de relatórios
+                                   // filtros iniciais
+                    var newdate = new Date();
+                    var primeiroDiaMes = new Date(newdate.getFullYear(), newdate.getMonth(), 1);
+                    
+                    $scope.filtros = {dtini: $filter('date')(primeiroDiaMes, "yyyy-MM-dd"), dtfim: $filter('date')(newdate, "yyyy-MM-dd")};
+                    console.log($scope.filtros);
+        
+        
+        $scope.carregar = function () {
+        
+                    $.ajax({
+                    type: "POST",
+                    url: '/admin/api/relatorio',
+                    data: JSON.stringify($scope.filtros),
+                    contentType: 'application/json',
+                    success: (data) => {
+                        var relatorio = data;
+                        console.log(relatorio);
+                        $scope.listaRelatorios = relatorio;
+                        $scope.$apply();
+                        
+                    },
+                    error: (data) => {
+                        alert('Erro ao selecionar relatorio, tente novamente mais tarde.');
+                    }
+                });
+                  
+                    }
+                    
+                    $scope.carregar();
         });
 
         painelApp.controller('contaController', function ($scope, $http) {
