@@ -3,15 +3,19 @@ package ads.pi4.controller.admin;
 import ads.pi4.DAO.ProdutoDAO;
 import ads.pi4.DAO.UsuarioDAO;
 import ads.pi4.DAO.VendaDAO;
+import ads.pi4.DAO.RelatorioDAO;
 import ads.pi4.model.Produto;
 import ads.pi4.model.Usuario;
 import ads.pi4.model.Venda;
+import ads.pi4.model.Relatorio;
+import ads.pi4.model.FiltroRelatorio;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -191,6 +195,30 @@ public class AdminController {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         return VendaDAO.listar();
+    }
+    
+    @PostMapping("/api/relatorio") //JSON com a lista de Produtos
+    @ResponseBody
+    public List<Relatorio> relatorio(@RequestBody FiltroRelatorio filtro) {
+        List<Relatorio> listaRelatorios = new ArrayList<Relatorio>();
+        SimpleDateFormat converte = new SimpleDateFormat("yyyy-MM-dd");
+        Date dtini_ = null;
+        Date dtfim_ = null;
+        System.out.println("CHEGOU NO METODO");
+        try {
+            dtini_ = new java.sql.Date(converte.parse(filtro.getDtini()).getTime());
+            dtfim_ = new java.sql.Date(converte.parse(filtro.getDtfim()).getTime());      
+            
+            System.out.println(dtini_);
+            System.out.println(dtfim_);
+            listaRelatorios = RelatorioDAO.listarVendasResumo(dtini_, dtfim_);
+            System.out.println("DEU bom!");
+            System.out.println("valor um: " + listaRelatorios.isEmpty());
+                      
+        } catch (ParseException ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listaRelatorios;
     }
 
     @PostMapping("/api/pedidos/{id}") //editar pedido
