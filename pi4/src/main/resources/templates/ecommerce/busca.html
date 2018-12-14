@@ -2,11 +2,12 @@
 <html lang="pt-br">
 <!-- Importo o conteudo do head (scripts, css) através arquivo template.html -->
 <head th:insert="template :: head(title='Perfumaria: Masculinos, Femininos e mais')"></head>
-
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
 <body>
     <!-- Importo o conteudo do Menu através arquivo template.html -->
     <div th:insert="template :: menu"></div>
-
+    
     <div class="container" style="padding-top: 40px">
         <!-- Ofertas -->
         <div class="ofertas">

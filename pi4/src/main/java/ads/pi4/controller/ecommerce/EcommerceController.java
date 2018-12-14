@@ -23,11 +23,14 @@ public class EcommerceController {
 
     @GetMapping //Home do ecommerce
     public ModelAndView home(HttpServletRequest req) {
-        req.getSession(true).setAttribute("cliente", ClienteDAO.obter(29));
         return  new ModelAndView("ecommerce/index")
-                .addObject("cliente", ClienteDAO.obter(29))
                 .addObject("novidades", ProdutoDAO.listar("novidades", false))
                 .addObject("maisVendidos", ProdutoDAO.listar("mais-vendidos", false));
+    }
+
+    @GetMapping("/entrar") //Entrar e Cadastro
+    public ModelAndView entrar(HttpServletRequest req) {
+        return  new ModelAndView("ecommerce/cadastro");
     }
 
     @GetMapping("/minha-conta") //Compras do usuário
@@ -68,7 +71,7 @@ public class EcommerceController {
 
     @GetMapping("/checkout") //Checkout
     public ModelAndView checkout(HttpServletRequest req) {
-        if (req.getSession(true).getAttribute("cliente") == null) return  new ModelAndView("redirect:/carrinho");
+        if (req.getSession(true).getAttribute("cliente") == null) return  new ModelAndView("redirect:/entrar?redirect=home");
         return  new ModelAndView("ecommerce/checkout");
     }
 }

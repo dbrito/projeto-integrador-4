@@ -51,9 +51,9 @@
                     <li th:if="${session.admin.getPerfil().equals('gerente')}">
                         <a href="#/relatorio"><i class="fa fa-file-text fa-lg"></i> Relatório</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="#/editar-conta"><i class="fa fa-edit fa-lg"></i> Editar Conta</span></a>
-                    </li>
+                    </li> -->
                     <li>
                         <a href="./logout"><i class="fa fa-times fa-lg"></i> Sair</span></a>
                     </li>
@@ -440,13 +440,13 @@
                                    // filtros iniciais
                     var newdate = new Date();
                     var primeiroDiaMes = new Date(newdate.getFullYear(), newdate.getMonth(), 1);
-                    
+
                     $scope.filtros = {dtini: $filter('date')(primeiroDiaMes, "yyyy-MM-dd"), dtfim: $filter('date')(newdate, "yyyy-MM-dd")};
                     console.log($scope.filtros);
-        
-        
+
+
         $scope.carregar = function () {
-        
+
                     $.ajax({
                     type: "POST",
                     url: '/admin/api/relatorio',
@@ -457,15 +457,15 @@
                         console.log(relatorio);
                         $scope.listaRelatorios = relatorio;
                         $scope.$apply();
-                        
+
                     },
                     error: (data) => {
                         alert('Erro ao selecionar relatorio, tente novamente mais tarde.');
                     }
                 });
-                  
+
                     }
-                    
+
                     $scope.carregar();
         });
 

@@ -3,7 +3,7 @@ package ads.pi4.model;
 import java.util.Date;
 
 public class Cliente {
-    
+
     private Integer ativo;
     private Integer id;
     private String cpf;
@@ -11,6 +11,7 @@ public class Cliente {
     private Date dataNascimento;
     private String telefone;
     private String email;
+    private String senha;
     private Endereco endereco;
 
     public Date getDataNascimento() {
@@ -75,5 +76,13 @@ public class Cliente {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }

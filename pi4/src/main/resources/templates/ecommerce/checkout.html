@@ -25,9 +25,8 @@
 </head>
 <body ng-app="carrinhoApp">
     <div class="container-fluid" style="background: #333;">
-        <h2 style="font-family:Pacifico; color: #FFF; line-height: 98px; text-align: center">
-            Perfumaria
-        </h2>
+            <h2 style="background: #333; color:#FFF; text-align: center; font-size: 40px; line-height: 100px; height: 100px;">
+                    <a href="/" style="text-decoration: none; color:#FFF;">Perfumaria</a></h2>
     </div>
     <div class="container" ng-controller="carrinhoController">
         <div ng-if="compraFinalizada" class="text-center" style="font-size: 40px; font-weight: bold;">
@@ -45,7 +44,7 @@
             <h1 class="text-center col-md-12" style="margin: 20px 0;">Checkout</h1>
             <div class="col-md-6">
                 <h4>Dados do Cliente</h4>
-                <strong>Nome: {{editarEnd}}</strong>
+                <strong>Nome:</strong>
                 {{cliente.nome + ' - ' + cliente.cpf}}<br>
 
                 <strong>Telefone: </strong> {{cliente.telefone}}<br>
@@ -70,7 +69,7 @@
                 <div ng-if="editarEnd" class="row">
                     <div class="form-group col-md-4">
                         <label for="cep">CEP:</label>
-                        <input ng-model="endereco.cep" type="text" class="form-control" name="cep" id="cep" required>
+                        <input ng-keyup="teste()" ng-model="endereco.cep" type="text" class="form-control" name="cep" id="cep" required>
                     </div>
                     <div class="form-group col-md-8">
                         <label for="endereco">Endereço:</label>
@@ -110,7 +109,7 @@
                     <i class="fa fa-barcode" style="font-size:40px;"></i>
                     Transferência Bancária
                 </label>
-                
+
             </div>
             <div class="col-md-6">
                 <h4>Itens</h4>
@@ -165,6 +164,23 @@
             $scope.compra = {};
             $scope.compraFinalizada = false;
 
+            $scope.teste = function () {
+                var cep = $('#cep').val().replace(/\D/g, '');
+                if (cep.length >= 8) buscaCep(cep);
+            }
+
+            function buscaCep(cep) {
+                $.ajax({
+                    type: "GET",
+                    url: 'https://viacep.com.br/ws/' + cep + '/json/',
+                    success: function (result) {
+                        $scope.endereco.estado = result.uf;
+                        $scope.endereco.cidade = result.localidade;
+                        $scope.endereco.endereco = result.logradouro;
+                    },
+                });
+            }
+
             $scope.toggleForm = function () {
                 $scope.editarEnd = !$scope.editarEnd;
             }
@@ -177,9 +193,13 @@
                 for (var prd in itensCarrinho) {
                     ids.push(prd.replace('P', ''))
                 }
-                if (ids.length == 0) return;
+                console.log(ids);
+                if (ids.length == 0) {
+                    return
+                };
                 pegarProdutos(ids);
             } else {
+                window.location.href="/";
                 itensCarrinho = {};
             }
 
@@ -211,17 +231,30 @@
                     url: './ecommerce/api/cliente'
                 }).then(function successCallback(response) {
                     $scope.cliente = response.data;
-                    $scope.endereco = response.data.endereco;
+                    console.log(response.data);
+                    if (response.data.endereco) $scope.endereco = response.data.endereco;
+                    else {
+                        endereco = {
+                            'id':null,
+                            'cep':null,
+                            'endereco':null,
+                            'numero':null,
+                            'complemento':null,
+                            'bairro':null,
+                            'cidade':null,
+                            'estado':null
+                        }
+                    }
                 }, function errorCallback(response) {
                     alert('Erro ao solicitar os dados do cliente.');
                 });
             }
 
             $scope.atualizarEndereco = function () {
-                console.log('here');
+                console.log($scope.endereco);
                 $.ajax({
                     type: "POST",
-                    url: '/ecommerce/api/endereco',
+                    url: ($scope.endereco.id) ? '/ecommerce/api/endereco' : '/ecommerce/api/cadastrar-endereco',
                     data: JSON.stringify($scope.endereco),
                     contentType: 'application/json',
                     success: (data)=> {

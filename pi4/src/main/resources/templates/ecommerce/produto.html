@@ -18,12 +18,16 @@
                     <span th:text="${produto.getNome()}" class="nome">The Secret Temptation Masculino Eau de Toilette</span>
                     <span th:if="${!produto.getPrecoOriginalFormatado().equals(produto.getPrecoVendaFormatado())}" th:text="${'de: R$' + produto.getPrecoOriginalFormatado()}" class="preco font-weight-bold" style="text-decoration:line-through;">R$ 149,00</span>
                     <span th:text="${'por: R$' + produto.getPrecoVendaFormatado()}" class="preco font-weight-bold">R$ 149,00</span>
-                    <a onclick="adicionaNoCarrinho(this); return false;" th:attr="product-id=${produto.getId()}" href="#">
+                    <a th:if="${produto.getQuantidade() > 0}" onclick="adicionaNoCarrinho(this); return false;" th:attr="product-id=${produto.getId()}" href="#">
                         <span class="call-to-action font-weight-bold d-inline-block">
                             <i class="fa fa-shopping-cart"></i>
                             Comprar
                         </span>
                     </a>
+
+                    <span style="background:#333" th:if="${produto.getQuantidade() == 0}" class="call-to-action font-weight-bold d-inline-block">
+                        Produto Indisponível
+                    </span>
                 </div>
             </div>
             <div class="col-12 col-md-9" style="margin-top:30px;">

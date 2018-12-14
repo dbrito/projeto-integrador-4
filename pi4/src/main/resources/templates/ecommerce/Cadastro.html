@@ -1,44 +1,117 @@
 <!DOCTYPE html>
-<!--
-Página de Login + Cadastro de Clientes.
--->
-<html>
-    <head>
-        <title>Nova Conta de Cliente</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h1>IDENTIFICAÇÃO</h1>
-        
-        <div>
-            <h2>JÁ SOU CLIENTE</h2>
-            <input type="text" name="e-mail" placeholder="E-mail ou CPF"/><br>
-            <br>
-            <input type="password"  name="senha" placeholder="Senha"/><br>
-            <br>
-            <input type="submit" value="ENTRAR"/> 
+<html lang="pt-br">
+<!-- Importo o conteudo do head (scripts, css) através arquivo template.html -->
+
+<head th:insert="template :: head(title='Perfumaria: Masculinos, Femininos e mais')"></head>
+
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+
+<body ng-app="entrarApp">
+    <h2 style="background: #333; color:#FFF; text-align: center; font-size: 40px; line-height: 100px; height: 100px;">
+        <a href="/" style="text-decoration: none; color:#FFF;">Perfumaria</a></h2>
+    <div class="container" ng-controller="entrarController">
+        <div class="row">
+            <div class="col-md-6" style="margin-top:20px; height: 500px;">
+                <h3>JÁ SOU CLIENTE</h3>
+                <div class="form-group">
+                    <label for="login_email">E-mail:</label>
+                    <input ng-model="loginCliente.email" type="text" id="login_email" name="login_email" class="form-control"
+                        placeholder="" />
+                </div>
+                <div class="form-group">
+                    <label for="login_senha">Senha:</label>
+                    <input ng-model="loginCliente.senha" type="password" id="login_senha" name="login_senha" class="form-control"
+                        placeholder="" />
+                </div>
+                <button type="button" class="btn btn-primary" ng-click="logar()">Entrar</button>
+            </div>
+
+            <div class="col-md-6" style="margin-top:20px;">
+                <h3>AINDA NÃO SOU CLIENTE</h3>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="castro_nome">Nome:</label>
+                        <input ng-model="novoCliente.nome" type="text" id="castro_nome" name="castro_nome" class="form-control"
+                            placeholder="" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="castro_cpf">CPF:</label>
+                        <input ng-model="novoCliente.cpf" type="text" id="castro_cpf" name="castro_cpf" class="form-control"
+                            placeholder="" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="castro_data">Data de nascimento:</label>
+                        <input ng-model="novoCliente.dataNascimento" type="date" id="castro_data" name="castro_data"
+                            class="form-control" placeholder="" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="castro_telefone">Telefone:</label>
+                        <input ng-model="novoCliente.telefone" type="text" id="castro_telefone" name="castro_telefone"
+                            class="form-control" placeholder="" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="castro_email">E-mail:</label>
+                        <input ng-model="novoCliente.email" type="text" id="castro_email" name="castro_email"
+                            class="form-control" placeholder="" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="castro_senha">Senha:</label>
+                        <input ng-model="novoCliente.senha" type="password" id="castro_senha" name="castro_senha"
+                            class="form-control" placeholder="" />
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="cadastrar()">Realizar Cadastro</button>
+                </div>
+            </div>
         </div>
-        
-        <div>
-            <h2>AINDA NÃO SOU CLIENTE</h2>
-           
-            <input type="text" name="cpf" placeholder="CPF*"/><br>
-            <br>
-            <input type="text" name="nome" placeholder="Nome*"/><br>
-            <br>
-            <input type="text" name="data_nascimento" placeholder="Nasc (DD/MM/AAA)*"/><br>
-            <br>
-            <input type="text" name="telefone" placeholder="Telefone*"/><br>
-            <br>
-            <input type="text" name="email" placeholder="E-mail*"/><br>
-            <br>
-            <input type="password" name="senha" placeholder="Senha*"/><br>
-            <br>
-            <input type="password" name="senha" placeholder="Confirmar senha*"/><br>
-            <br>
-            <input type="submit" value="FAZER CADASTRO"/> 
-        </div>
-        
-    </body>
+    </div>
+    <!-- Importo o conteudo do Footer através arquivo template.html -->
+    <div th:insert="template :: footer"></div>
+</body>
+
+<script>
+    var entrarApp = angular.module('entrarApp', []);
+    entrarApp.controller('entrarController', function ($scope, $http) {
+        $scope.loginCliente = {
+            'email': '',
+            'senha': ''
+        };
+
+        $scope.novoCliente = {
+            'cpf': '',
+            'nome': '',
+            'dataNascimento': '',
+            'telefone': '',
+            'email': '',
+            'senha': ''
+        };
+
+        $scope.cadastrar = function() {
+            $http({
+                method: 'POST',
+                url: './ecommerce/api/cadastrar-cliente',
+                data: JSON.stringify($scope.novoCliente)
+            }).then(function successCallback(response) {
+                if (window.location.href.indexOf("redirect=home")) window.location.href = "/checkout";
+                else window.location.href = "/";
+            }, function errorCallback(response) {
+                alert('Erro ao cadastrar');
+            });
+        }
+
+        $scope.logar = function() {
+            $http({
+                method: 'POST',
+                url: './ecommerce/api/entrar',
+                data: JSON.stringify($scope.loginCliente)
+            }).then(function successCallback(response) {
+                if (window.location.href.indexOf("redirect=home")) window.location.href = "/checkout";
+                else window.location.href = "/";
+            }, function errorCallback(response) {
+                alert('Erro ao efetuar o login');
+            });
+        }
+    });
+</script>
+
 </html>
